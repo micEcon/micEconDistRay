@@ -1,0 +1,20 @@
+Package: micEconDistRay
+Version: 0.1-0
+Date: 2023-04-09
+Title: Econometric Production Analysis with Ray-Based Distance Functions
+Authors@R: c( person( "Arne", "Henningsen", role = c( "aut", "cre" ), 
+    email = "arne.henningsen@gmail.com" ),
+  person( "Juan José", "Price", role = c( "aut" ) ) )
+Depends: R (>= 2.4.0)
+Imports: sfaR (>= 1.0)
+Description: Tools for econometric analysis 
+   of multiple-input-multiple-output production technologies
+   with ray-based input distance functions
+   as suggested by Price and Henningsen (2022): 
+   "A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: 
+   Derivation and an Empirical Application",
+   <https://ideas.repec.org/p/foi/wpaper/2022_03.html>.
+License: GPL (>= 2)
+Encoding: UTF-8
+URL: https://github.com/micEcon/micEconDistRay
+BugReports: https://github.com/micEcon/micEconDistRay/issues

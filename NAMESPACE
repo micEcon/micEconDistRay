@@ -1,2 +1,6 @@
+export( "distRayEst" )
+
 importFrom( "sfaR", "sfacross" )
+importFrom( "stats", "as.formula" )
+importFrom( "stats", "coef" )
 importFrom( "stats", "lm" )

@@ -1,3 +1,5 @@
+export( "distRayDeriv" )
+export( "distRayEla" )
 export( "distRayEst" )
 
 importFrom( "sfaR", "sfacross" )

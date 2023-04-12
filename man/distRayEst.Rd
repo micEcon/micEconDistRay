@@ -59,9 +59,23 @@ distRayEst( xNames, yNames, zNames = NULL, sNames = NULL,
 \author{Arne Henningsen and Juan José Price}
 
 \examples{
-   data( germanFarms, package = "micEcon" )
-   
-   # to be added later
+# load and prepare data set 
+data( appleProdFr86, package = "micEcon" )
+appleProdFr86$qCap <- appleProdFr86$vCap / appleProdFr86$pCap
+appleProdFr86$qLab <- appleProdFr86$vLab / appleProdFr86$pLab
+appleProdFr86$qMat <- appleProdFr86$vMat / appleProdFr86$pMat
+
+# Cobb-Douglas ray-based input distance function
+estCD <- distRayEst( xNames = c( "qCap", "qLab", "qMat" ),
+  yNames = c( "qApples", "qOtherOut" ),
+  data = appleProdFr86, form = "cd" )
+summary( estCD )
+
+# Translog ray-based input distance function
+estTL <- distRayEst( xNames = c( "qCap", "qLab", "qMat" ),
+  yNames = c( "qApples", "qOtherOut" ),
+  data = appleProdFr86 )
+summary( estTL )
 }
 
 \keyword{models}

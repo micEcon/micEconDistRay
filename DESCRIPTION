@@ -7,6 +7,7 @@ Authors@R: c( person( "Arne", "Henningsen", role = c( "aut", "cre" ),
   person( "Juan José", "Price", role = c( "aut" ) ) )
 Depends: R (>= 4.2.0)
 Imports: sfaR (>= 1.0), stats (>= 4.2.0)
+Suggests: micEcon (>= 0.6-18)
 Description: Tools for econometric analysis 
    of multiple-input-multiple-output production technologies
    with ray-based input distance functions

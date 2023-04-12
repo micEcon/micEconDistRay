@@ -1,0 +1,321 @@
+
+R version 4.2.3 (2023-03-15) -- "Shortstop Beagle"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library( "micEconDistRay" )
+> 
+> # load and prepare data set 
+> data( appleProdFr86, package = "micEcon" )
+> appleProdFr86$qCap <- appleProdFr86$vCap / appleProdFr86$pCap
+> appleProdFr86$qLab <- appleProdFr86$vLab / appleProdFr86$pLab
+> appleProdFr86$qMat <- appleProdFr86$vMat / appleProdFr86$pMat
+> 
+> # Cobb-Douglas ray-based input distance function
+> estCD <- distRayEst( xNames = c( "qCap", "qLab", "qMat" ),
++   yNames = c( "qApples", "qOtherOut" ),
++   data = appleProdFr86, form = "cd" )
+Warning message:
+The residuals of the OLS are  right-skewed. This may indicate the absence of inefficiency or
+  model misspecification or sample 'bad luck' 
+> cbind( round( coef( estCD ), 2 ) )
+                 [,1]
+(Intercept)    -11.12
+alpha_1          0.08
+alpha_2          0.62
+beta_1          -0.03
+beta_2          -0.39
+Zu_(Intercept)  -9.59
+Zv_(Intercept)  -2.19
+> cbind( names( estCD ) )
+      [,1]          
+ [1,] "call"        
+ [2,] "formula"     
+ [3,] "S"           
+ [4,] "typeSfa"     
+ [5,] "Nobs"        
+ [6,] "nXvar"       
+ [7,] "scaling"     
+ [8,] "logDepVar"   
+ [9,] "nuZUvar"     
+[10,] "nvZVvar"     
+[11,] "nParm"       
+[12,] "udist"       
+[13,] "startVal"    
+[14,] "dataTable"   
+[15,] "olsParam"    
+[16,] "olsStder"    
+[17,] "olsSigmasq"  
+[18,] "olsLoglik"   
+[19,] "olsSkew"     
+[20,] "olsM3Okay"   
+[21,] "CoelliM3Test"
+[22,] "AgostinoTest"
+[23,] "isWeights"   
+[24,] "optType"     
+[25,] "nIter"       
+[26,] "optStatus"   
+[27,] "startLoglik" 
+[28,] "mlLoglik"    
+[29,] "mlParam"     
+[30,] "gradient"    
+[31,] "gradL_OBS"   
+[32,] "gradientNorm"
+[33,] "invHessian"  
+[34,] "hessianType" 
+[35,] "mlDate"      
+[36,] "coefList"    
+[37,] "ela"         
+[38,] "mono"        
+> lapply( estCD$coefList, function(x) round( x, 3 ) )
+$alpha0
+(Intercept) 
+    -11.116 
+
+$alphaVec
+[1] 0.082 0.615 0.303
+
+$betaVec
+[1] -0.031 -0.388
+
+> apply( estCD$mono, 2, table )
+$x_1
+
+TRUE 
+ 140 
+
+$x_2
+
+TRUE 
+ 140 
+
+$x_3
+
+TRUE 
+ 140 
+
+$y_1
+
+FALSE  TRUE 
+    9   131 
+
+$y_2
+
+TRUE 
+ 140 
+
+$all_x
+
+TRUE 
+ 140 
+
+$all_y
+
+FALSE  TRUE 
+    9   131 
+
+$all
+
+FALSE  TRUE 
+    9   131 
+
+> lapply( estCD$ela, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.08    0.08    0.08    0.08    0.08    0.08 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.62    0.62    0.62    0.62    0.62    0.62 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    0.3     0.3     0.3     0.3     0.3     0.3 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.39   -0.33   -0.18   -0.19   -0.03    0.00 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.39   -0.36   -0.21   -0.20   -0.06    0.00 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2.58    2.58    2.58    2.58    2.58    2.58 
+
+> 
+> # Translog ray-based input distance function
+> estTL <- distRayEst( xNames = c( "qCap", "qLab", "qMat" ),
++   yNames = c( "qApples", "qOtherOut" ),
++   data = appleProdFr86 )
+> cbind( round( coef( estTL ), 2 ) )
+                [,1]
+(Intercept)    -9.37
+alpha_1        -0.03
+alpha_2         0.08
+beta_1         -2.07
+beta_2         -0.69
+alpha_1_1       0.18
+alpha_1_2       0.00
+alpha_2_2       0.10
+beta_1_1        1.28
+beta_1_2        0.27
+beta_2_2       -0.09
+psi_1_1        -0.08
+psi_1_2        -0.04
+psi_2_1         0.38
+psi_2_2         0.08
+Zu_(Intercept) -2.14
+Zv_(Intercept) -3.35
+> cbind( names( estTL ) )
+      [,1]          
+ [1,] "call"        
+ [2,] "formula"     
+ [3,] "S"           
+ [4,] "typeSfa"     
+ [5,] "Nobs"        
+ [6,] "nXvar"       
+ [7,] "scaling"     
+ [8,] "logDepVar"   
+ [9,] "nuZUvar"     
+[10,] "nvZVvar"     
+[11,] "nParm"       
+[12,] "udist"       
+[13,] "startVal"    
+[14,] "dataTable"   
+[15,] "olsParam"    
+[16,] "olsStder"    
+[17,] "olsSigmasq"  
+[18,] "olsLoglik"   
+[19,] "olsSkew"     
+[20,] "olsM3Okay"   
+[21,] "CoelliM3Test"
+[22,] "AgostinoTest"
+[23,] "isWeights"   
+[24,] "optType"     
+[25,] "nIter"       
+[26,] "optStatus"   
+[27,] "startLoglik" 
+[28,] "mlLoglik"    
+[29,] "mlParam"     
+[30,] "gradient"    
+[31,] "gradL_OBS"   
+[32,] "gradientNorm"
+[33,] "invHessian"  
+[34,] "hessianType" 
+[35,] "mlDate"      
+[36,] "coefList"    
+[37,] "ela"         
+[38,] "mono"        
+> lapply( estTL$coefList, function(x) round( x, 3 ) )
+$alpha0
+(Intercept) 
+     -9.368 
+
+$alphaVec
+[1] -0.028  0.079  0.949
+
+$betaVec
+[1] -2.065 -0.687
+
+$alphaMat
+       [,1]   [,2]   [,3]
+[1,]  0.176 -0.002 -0.174
+[2,] -0.002  0.102 -0.100
+[3,] -0.174 -0.100  0.273
+
+$betaMat
+      [,1]   [,2]
+[1,] 1.276  0.267
+[2,] 0.267 -0.091
+
+$psiMat
+       [,1]   [,2]
+[1,] -0.079 -0.040
+[2,]  0.375  0.083
+[3,] -0.296 -0.043
+
+> apply( estTL$mono, 2, table )
+$x_1
+
+FALSE  TRUE 
+   39   101 
+
+$x_2
+
+TRUE 
+ 140 
+
+$x_3
+
+FALSE  TRUE 
+   17   123 
+
+$y_1
+
+FALSE  TRUE 
+   11   129 
+
+$y_2
+
+FALSE  TRUE 
+    4   136 
+
+$all_x
+
+FALSE  TRUE 
+   55    85 
+
+$all_y
+
+FALSE  TRUE 
+   15   125 
+
+$all
+
+FALSE  TRUE 
+   67    73 
+
+> lapply( estTL$ela, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.20   -0.01    0.08    0.07    0.15    0.37 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.30    0.52    0.65    0.66    0.79    1.03 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.20    0.13    0.30    0.27    0.41    0.70 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.87   -0.34   -0.17   -0.24   -0.06    0.23 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.51   -0.27   -0.17   -0.18   -0.08    0.11 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -41.20    1.73    2.45    3.17    3.70   39.00 
+
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  1.828   0.092   1.916 

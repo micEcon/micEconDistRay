@@ -1,3 +1,4 @@
+export( "distRayCalc" )
 export( "distRayDeriv" )
 export( "distRayEla" )
 export( "distRayEst" )

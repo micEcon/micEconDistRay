@@ -16,6 +16,12 @@ lapply( estCD$coefList, function(x) round( x, 3 ) )
 apply( estCD$mono, 2, table )
 lapply( estCD$ela, function(x) round( summary(x), 2 ) )
 
+# calculate the dependent variable (logarithm of predicted distance)
+appleProdFr86$distCD <- distRayCalc( xNames = c( "qCap", "qLab", "qMat" ),
+  yNames = c( "qApples", "qOtherOut" ), data = appleProdFr86, 
+  coef = coef( estCD ), form = "cd" )
+round( summary( appleProdFr86$distCD ), 3 )
+
 # calculate elasticities
 elaCD <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),
   yNames = c( "qApples", "qOtherOut" ),
@@ -40,6 +46,12 @@ cbind( names( estTL ) )
 lapply( estTL$coefList, function(x) round( x, 3 ) )
 apply( estTL$mono, 2, table )
 lapply( estTL$ela, function(x) round( summary(x), 2 ) )
+
+# calculate the dependent variable (logarithm of predicted distance)
+appleProdFr86$logDistTL <- distRayCalc( xNames = c( "qCap", "qLab", "qMat" ),
+  yNames = c( "qApples", "qOtherOut" ), data = appleProdFr86, 
+  coef = coef( estTL ) )
+round( summary( appleProdFr86$logDistTL ), 3 )
 
 # calculate elasticities
 elaTL <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),

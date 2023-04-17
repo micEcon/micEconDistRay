@@ -14,6 +14,12 @@ lapply( estCD$coefList, function(x) round( x, 3 ) )
 apply( estCD$mono, 2, table )
 lapply( estCD$ela, function(x) round( summary(x), 2 ) )
 
+# calculate the dependent variable (logarithm of predicted distance)
+germanFarms$logDistCD <- distRayCalc( xNames = c( "land", "qLabor", "qVarInput" ),
+  yNames = c( "vCrop", "vAnimal" ), data = germanFarms, coef = coef( estCD ),
+  form = "cd" )
+round( summary( germanFarms$logDistCD ), 3 )
+
 # calculate elasticities
 elaCD <- distRayEla( xNames = c( "land", "qLabor", "qVarInput" ),
   yNames = c( "vCrop", "vAnimal" ),
@@ -38,6 +44,11 @@ cbind( names( estTL ) )
 lapply( estTL$coefList, function(x) round( x, 3 ) )
 apply( estTL$mono, 2, table )
 lapply( estTL$ela, function(x) round( summary(x), 2 ) )
+
+# calculate the dependent variable (logarithm of predicted distance)
+germanFarms$logDistTL <- distRayCalc( xNames = c( "land", "qLabor", "qVarInput" ),
+  yNames = c( "vCrop", "vAnimal" ), data = germanFarms, coef = coef( estTL ) )
+round( summary( germanFarms$logDistTL ), 3 )
 
 # calculate elasticities
 elaTL <- distRayEla( xNames = c( "land", "qLabor", "qVarInput" ),

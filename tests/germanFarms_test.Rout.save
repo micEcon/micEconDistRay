@@ -114,6 +114,14 @@ $ela_scale
    3.75    3.75    3.75    3.75    3.75    3.75 
 
 > 
+> # calculate the dependent variable (logarithm of predicted distance)
+> germanFarms$logDistCD <- distRayCalc( xNames = c( "land", "qLabor", "qVarInput" ),
++   yNames = c( "vCrop", "vAnimal" ), data = germanFarms, coef = coef( estCD ),
++   form = "cd" )
+> round( summary( germanFarms$logDistCD ), 3 )
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -0.030   0.016   0.026   0.030   0.036   0.103 
+> 
 > # calculate elasticities
 > elaCD <- distRayEla( xNames = c( "land", "qLabor", "qVarInput" ),
 +   yNames = c( "vCrop", "vAnimal" ),
@@ -295,6 +303,13 @@ $ela_scale
  -25.88    0.53    1.04    0.15    1.77    6.47 
 
 > 
+> # calculate the dependent variable (logarithm of predicted distance)
+> germanFarms$logDistTL <- distRayCalc( xNames = c( "land", "qLabor", "qVarInput" ),
++   yNames = c( "vCrop", "vAnimal" ), data = germanFarms, coef = coef( estTL ) )
+> round( summary( germanFarms$logDistTL ), 3 )
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   0.000   0.009   0.020   0.026   0.102 
+> 
 > # calculate elasticities
 > elaTL <- distRayEla( xNames = c( "land", "qLabor", "qVarInput" ),
 +   yNames = c( "vCrop", "vAnimal" ),
@@ -356,4 +371,4 @@ $d_y_2
 > 
 > proc.time()
    user  system elapsed 
-  2.893   0.109   2.994 
+  2.735   0.136   2.862 

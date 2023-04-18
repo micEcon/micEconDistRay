@@ -16,6 +16,7 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > library( "micEconDistRay" )
+> library( "quadprog" )
 > 
 > # load and prepare data set 
 > data( appleProdFr86, package = "micEcon" )
@@ -222,6 +223,54 @@ $d_y_1
 $d_y_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   -4.25   -0.27   -0.11   -0.29   -0.04    0.00 
+
+> 
+> # vector of unrestricted coefficients and their covariance matrix
+> nCoefCD <- length( coef( estCD ) ) - 2
+> uCoefCD <- coef( estCD )[ 1:nCoefCD ]
+> uCovInvCD <- solve( vcov( estCD )[ 1:nCoefCD, 1:nCoefCD ] )
+> 
+> # obtain the matrix and vector to impose monotonicity
+> restrCD <- distRayMonoRestr( xNames = c( "qCap", "qLab", "qMat" ),
++   yNames = c( "qApples", "qOtherOut" ), data = appleProdFr86,
++   form = "cd" )
+> 
+> # obtain the restricted coefficients
+> minDistCD <- solve.QP( Dmat = uCovInvCD, dvec = rep( 0, nCoefCD ),
++   Amat = t( restrCD$RMat ), bvec = - restrCD$RMat %*% uCoefCD + restrCD$rVec )
+> rCoefCD <- minDistCD$solution + uCoefCD
+> round( rCoefCD, 3 )
+(Intercept)     alpha_1     alpha_2      beta_1      beta_2 
+    -11.145       0.080       0.617       0.000      -0.380 
+> 
+> # calculate elasticities based on restricted coefficients
+> rElaCD <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),
++   yNames = c( "qApples", "qOtherOut" ),
++   coef = rCoefCD, data = appleProdFr86, form = "cd" )
+> lapply( rElaCD, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.08    0.08    0.08    0.08    0.08    0.08 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.62    0.62    0.62    0.62    0.62    0.62 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    0.3     0.3     0.3     0.3     0.3     0.3 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.38   -0.34   -0.19   -0.19   -0.04    0.00 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.38   -0.34   -0.19   -0.19   -0.04    0.00 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   2.63    2.63    2.63    2.63    2.63    2.63 
 
 > 
 > 
@@ -450,7 +499,58 @@ $d_y_2
   -4.24   -0.36   -0.15   -0.34   -0.09    0.62 
 
 > 
+> # vector of unrestricted coefficients and their covariance matrix
+> nCoefTL <- length( coef( estTL ) ) - 2
+> uCoefTL <- coef( estTL )[ 1:nCoefTL ]
+> uCovInvTL <- solve( vcov( estTL )[ 1:nCoefTL, 1:nCoefTL ] )
+> 
+> # obtain the matrix and vector to impose monotonicity
+> restrTL <- distRayMonoRestr( xNames = c( "qCap", "qLab", "qMat" ),
++   yNames = c( "qApples", "qOtherOut" ), data = appleProdFr86 )
+> 
+> # obtain the restricted coefficientslibrary( "quadprog" )
+> minDistTL <- solve.QP( Dmat = uCovInvTL, dvec = rep( 0, nCoefTL ),
++   Amat = t( restrTL$RMat ), bvec = - restrTL$RMat %*% uCoefTL + restrTL$rVec )
+> rCoefTL <- minDistTL$solution + uCoefTL
+> round( rCoefTL, 3 )
+(Intercept)     alpha_1     alpha_2      beta_1      beta_2   alpha_1_1 
+    -10.117      -0.067       0.474      -1.322      -0.516       0.042 
+  alpha_1_2   alpha_2_2    beta_1_1    beta_1_2    beta_2_2     psi_1_1 
+      0.037      -0.035       0.945       0.102      -0.095       0.024 
+    psi_1_2     psi_2_1     psi_2_2 
+      0.014       0.197       0.036 
+> 
+> # calculate elasticities based on restricted coefficients
+> rElaTL <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),
++   yNames = c( "qApples", "qOtherOut" ),
++   coef = rCoefTL, data = appleProdFr86 )
+> lapply( rElaTL, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00    0.07    0.10    0.09    0.12    0.19 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.43    0.55    0.62    0.62    0.70    0.82 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.02    0.20    0.31    0.28    0.36    0.55 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.74   -0.32   -0.18   -0.23   -0.11    0.00 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.39   -0.25   -0.19   -0.19   -0.11    0.00 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1.31    1.93    2.42    2.83    2.99   14.69 
+
+> 
 > 
 > proc.time()
    user  system elapsed 
-  1.826   0.091   1.909 
+  2.654   0.108   2.765 

@@ -1,0 +1,1237 @@
+
+R version 4.2.3 (2023-03-15) -- "Shortstop Beagle"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> # a part of this test script is a partial replication of Price & Henningsen
+> # (forthcoming): A Ray-Based Input Distance Function to Model Zero-Valued
+> # Output Quantities: Derivation and an Empirical Application, Journal of
+> # Productivity Analysis.
+> 
+> library( "micEconDistRay" )
+> library( "quadprog" )
+> 
+> data( "MuseumsDk" )
+> 
+> # prepare variables
+> MuseumsDk$pub <- with( MuseumsDk, aarc + ach + aah + anh ) 
+> MuseumsDk$k <- with( MuseumsDk, expProperty / ipc )
+> MuseumsDk$fte <- MuseumsDk$ftesc + MuseumsDk$ftensc
+> MuseumsDk$logUnits <- log( MuseumsDk$units )
+> 
+> # inputs
+> xNames <- c( "k", "ftesc", "ftensc" )
+> # outputs 
+> yNames <- c( "vis", "expCons", "pub", "exh", "edu", "ev" )
+> # control variables 
+> zNames <- c( "logUnits", "resp" )
+> conDummy <- c( 2 )
+> 
+> # remove observations that cannot be used in the estimations
+> MuseumsDk <- subset( MuseumsDk, rowSums( MuseumsDk[ , xNames ] <= 0 ) == 0 &
++     rowSums( is.na( MuseumsDk[ , xNames ] ) ) == 0 &
++     rowSums( is.na( MuseumsDk[ , yNames ] ) ) == 0 )
+> 
+> # remove observation with no visitors
+> MuseumsDk <- subset( MuseumsDk, vis > 0 )
+> 
+> # mean-scaling input and output quantities
+> for( n in c( xNames, yNames ) ) {
++   MuseumsDk[[ n ]] <- MuseumsDk[[ n ]] / mean( MuseumsDk[[ n ]] ) 
++ }
+> 
+> 
+> ### estimate a ray-based Cobb-Douglas input distance function
+> estCD <- distRayEst( xNames = xNames, yNames = yNames, zNames = zNames,
++   data = MuseumsDk, form = "cd" )
+> cbind( round( coef( estCD ), 2 ) )
+                [,1]
+(Intercept)     0.42
+alpha_1         0.20
+alpha_2         0.54
+beta_1          0.92
+beta_2         -0.25
+beta_3          0.08
+beta_4         -0.14
+beta_5          0.08
+beta_6         -0.66
+delta_1        -0.10
+delta_2        -0.40
+Zu_(Intercept) -3.61
+Zv_(Intercept) -1.98
+> cbind( names( estCD ) )
+      [,1]          
+ [1,] "call"        
+ [2,] "formula"     
+ [3,] "S"           
+ [4,] "typeSfa"     
+ [5,] "Nobs"        
+ [6,] "nXvar"       
+ [7,] "scaling"     
+ [8,] "logDepVar"   
+ [9,] "nuZUvar"     
+[10,] "nvZVvar"     
+[11,] "nParm"       
+[12,] "udist"       
+[13,] "startVal"    
+[14,] "dataTable"   
+[15,] "olsParam"    
+[16,] "olsStder"    
+[17,] "olsSigmasq"  
+[18,] "olsLoglik"   
+[19,] "olsSkew"     
+[20,] "olsM3Okay"   
+[21,] "CoelliM3Test"
+[22,] "AgostinoTest"
+[23,] "isWeights"   
+[24,] "optType"     
+[25,] "nIter"       
+[26,] "optStatus"   
+[27,] "startLoglik" 
+[28,] "mlLoglik"    
+[29,] "mlParam"     
+[30,] "gradient"    
+[31,] "gradL_OBS"   
+[32,] "gradientNorm"
+[33,] "invHessian"  
+[34,] "hessianType" 
+[35,] "mlDate"      
+[36,] "coefList"    
+[37,] "ela"         
+[38,] "mono"        
+> lapply( estCD$coefList, function(x) round( x, 3 ) )
+$alpha0
+(Intercept) 
+      0.424 
+
+$alphaVec
+[1] 0.202 0.544 0.255
+
+$betaVec
+[1]  0.923 -0.251  0.084 -0.143  0.081 -0.658
+
+$deltaVec
+[1] -0.105 -0.403
+
+> apply( estCD$mono, 2, table )
+$x_1
+
+TRUE 
+ 528 
+
+$x_2
+
+TRUE 
+ 528 
+
+$x_3
+
+TRUE 
+ 528 
+
+$y_1
+
+TRUE 
+ 528 
+
+$y_2
+
+FALSE  TRUE 
+  405   123 
+
+$y_3
+
+FALSE  TRUE 
+    5   523 
+
+$y_4
+
+FALSE  TRUE 
+  247   281 
+
+$y_5
+
+FALSE  TRUE 
+    2   526 
+
+$y_6
+
+FALSE  TRUE 
+  222   306 
+
+$all_x
+
+TRUE 
+ 528 
+
+$all_y
+
+FALSE  TRUE 
+  479    49 
+
+$all
+
+FALSE  TRUE 
+  479    49 
+
+> lapply( estCD$ela, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    0.2     0.2     0.2     0.2     0.2     0.2 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.54    0.54    0.54    0.54    0.54    0.54 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.25    0.25    0.25    0.25    0.25    0.25 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.90   -0.40   -0.25   -0.31   -0.15   -0.02 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.55    0.00    0.01   -0.02    0.04    0.21 
+
+$ela_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.64   -0.10   -0.04   -0.09   -0.01    0.08 
+
+$ela_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.54   -0.13   -0.01   -0.07    0.02    0.14 
+
+$ela_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.49   -0.16   -0.10   -0.12   -0.06    0.01 
+
+$ela_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.56   -0.07   -0.01   -0.05    0.01    0.08 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1.52    1.52    1.52    1.52    1.52    1.52 
+
+$sela_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   -0.1    -0.1    -0.1    -0.1    -0.1    -0.1 
+
+$sela_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   -0.4    -0.4    -0.4    -0.4    -0.4    -0.4 
+
+> 
+> # calculate the dependent variable (logarithm of predicted distance)
+> MuseumsDk$distCD <- distRayCalc( 
++   xNames = xNames, yNames = yNames, zNames = zNames, 
++   data = MuseumsDk, coef = coef( estCD ), form = "cd" )
+> round( summary( MuseumsDk$distCD ), 3 )
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -1.140  -0.123   0.146   0.131   0.373   1.510 
+> 
+> # calculate elasticities
+> elaCD <- distRayEla( xNames = xNames, yNames = yNames, zNames = zNames,
++   coef = coef( estCD ), data = MuseumsDk, form = "cd" )
+> all.equal( elaCD, estCD$ela )
+[1] TRUE
+> lapply( elaCD, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    0.2     0.2     0.2     0.2     0.2     0.2 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.54    0.54    0.54    0.54    0.54    0.54 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.25    0.25    0.25    0.25    0.25    0.25 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.90   -0.40   -0.25   -0.31   -0.15   -0.02 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.55    0.00    0.01   -0.02    0.04    0.21 
+
+$ela_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.64   -0.10   -0.04   -0.09   -0.01    0.08 
+
+$ela_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.54   -0.13   -0.01   -0.07    0.02    0.14 
+
+$ela_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.49   -0.16   -0.10   -0.12   -0.06    0.01 
+
+$ela_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.56   -0.07   -0.01   -0.05    0.01    0.08 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1.52    1.52    1.52    1.52    1.52    1.52 
+
+$sela_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   -0.1    -0.1    -0.1    -0.1    -0.1    -0.1 
+
+$sela_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   -0.4    -0.4    -0.4    -0.4    -0.4    -0.4 
+
+> 
+> # calculate derivatives
+> derivCD <- distRayDeriv( xNames = xNames, yNames = yNames, zNames = zNames,
++   coef = coef( estCD ), data = MuseumsDk, form = "cd" )
+> lapply( derivCD, function(x) round( summary(x), 
++   3 - round( log( max( abs( x ) ), 10 ) ) ) )
+$d_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.02    0.24    0.45    0.58    0.81    4.71 
+
+$d_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.16    0.49    0.91    1.19    1.81    4.81 
+
+$d_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.02    0.26    0.55    0.89    1.12    8.18 
+
+$d_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -6.06   -0.94   -0.51   -0.75   -0.28   -0.04 
+
+$d_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -0.696   0.006   0.061   0.070   0.120   1.346 
+
+$d_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -1.777  -0.205  -0.105  -0.149  -0.054   0.018 
+
+$d_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -1.818  -0.159  -0.006  -0.068   0.051   0.838 
+
+$d_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -2.811  -0.383  -0.185  -0.279  -0.090   0.003 
+
+$d_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -0.801  -0.105  -0.019  -0.052   0.037   0.747 
+
+$d_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -0.475  -0.152  -0.121  -0.129  -0.093  -0.034 
+
+$d_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -1.824  -0.585  -0.466  -0.494  -0.356  -0.129 
+
+> 
+> # vector of unrestricted coefficients and their covariance matrix
+> nCoefCD <- length( coef( estCD ) ) - 2
+> uCoefCD <- coef( estCD )[ 1:nCoefCD ]
+> uCovInvCD <- solve( vcov( estCD )[ 1:nCoefCD, 1:nCoefCD ] )
+> 
+> # obtain the matrix and vector to impose monotonicity
+> restrCD <- distRayMonoRestr( 
++   xNames = xNames, yNames = yNames, zNames = zNames, 
++   data = MuseumsDk, form = "cd" )
+> 
+> # obtain the restricted coefficients
+> minDistCD <- solve.QP( Dmat = uCovInvCD, dvec = rep( 0, nCoefCD ),
++   Amat = t( restrCD$RMat ), bvec = - restrCD$RMat %*% uCoefCD + restrCD$rVec )
+> rCoefCD <- minDistCD$solution + uCoefCD
+> round( rCoefCD, 3 )
+(Intercept)     alpha_1     alpha_2      beta_1      beta_2      beta_3 
+      1.208       0.191       0.576       0.263       0.000       0.000 
+     beta_4      beta_5      beta_6     delta_1     delta_2 
+      0.000       0.000      -0.747      -0.110      -0.326 
+> 
+> # calculate elasticities based on restricted coefficients
+> rElaCD <- distRayEla( xNames = xNames, yNames = yNames, zNames = zNames,
++   coef = rCoefCD, data = MuseumsDk, form = "cd" )
+> lapply( rElaCD, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.19    0.19    0.19    0.19    0.19    0.19 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.58    0.58    0.58    0.58    0.58    0.58 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.23    0.23    0.23    0.23    0.23    0.23 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.75   -0.19   -0.10   -0.15   -0.06   -0.01 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.71   -0.18   -0.04   -0.13    0.00    0.00 
+
+$ela_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.68   -0.12   -0.03   -0.10    0.00    0.00 
+
+$ela_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.68   -0.28   -0.09   -0.17   -0.02    0.00 
+
+$ela_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.68   -0.13   -0.06   -0.10   -0.02    0.00 
+
+$ela_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.68   -0.11   -0.04   -0.09   -0.01    0.00 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   1.34    1.34    1.34    1.34    1.34    1.34 
+
+$sela_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.11   -0.11   -0.11   -0.11   -0.11   -0.11 
+
+$sela_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.33   -0.33   -0.33   -0.33   -0.33   -0.33 
+
+> 
+> 
+> ### estimate a ray-based Cobb-Douglas input distance function
+> ### with control variables as "shifters" only
+> estTLShift <- distRayEst( xNames = xNames, yNames = yNames, sNames = zNames,
++   data = MuseumsDk, form = "tl" )
+> cbind( round( coef( estTLShift ), 2 ) )
+                [,1]
+(Intercept)     3.83
+alpha_1         0.22
+alpha_2         0.35
+beta_1         -2.33
+beta_2         -1.38
+beta_3         -0.63
+beta_4         -0.47
+beta_5         -0.17
+beta_6         -1.26
+delta_1        -0.09
+delta_2        -0.39
+alpha_1_1      -0.09
+alpha_1_2       0.11
+alpha_2_2       0.12
+beta_1_1        2.44
+beta_1_2        0.11
+beta_1_3       -0.34
+beta_1_4        0.28
+beta_1_5       -0.04
+beta_1_6        0.36
+beta_2_2        0.61
+beta_2_3        0.26
+beta_2_4       -0.14
+beta_2_5        0.16
+beta_2_6        0.01
+beta_3_3        1.11
+beta_3_4       -0.37
+beta_3_5       -0.20
+beta_3_6        0.18
+beta_4_4        0.51
+beta_4_5        0.24
+beta_4_6       -0.02
+beta_5_5        0.10
+beta_5_6        0.06
+beta_6_6       -0.14
+psi_1_1         0.09
+psi_1_2        -0.23
+psi_1_3         0.05
+psi_1_4        -0.08
+psi_1_5         0.17
+psi_1_6         0.00
+psi_2_1        -0.15
+psi_2_2         0.19
+psi_2_3        -0.10
+psi_2_4         0.18
+psi_2_5         0.10
+psi_2_6        -0.01
+Zu_(Intercept) -2.50
+Zv_(Intercept) -2.61
+> cbind( names( estTLShift ) )
+      [,1]          
+ [1,] "call"        
+ [2,] "formula"     
+ [3,] "S"           
+ [4,] "typeSfa"     
+ [5,] "Nobs"        
+ [6,] "nXvar"       
+ [7,] "scaling"     
+ [8,] "logDepVar"   
+ [9,] "nuZUvar"     
+[10,] "nvZVvar"     
+[11,] "nParm"       
+[12,] "udist"       
+[13,] "startVal"    
+[14,] "dataTable"   
+[15,] "olsParam"    
+[16,] "olsStder"    
+[17,] "olsSigmasq"  
+[18,] "olsLoglik"   
+[19,] "olsSkew"     
+[20,] "olsM3Okay"   
+[21,] "CoelliM3Test"
+[22,] "AgostinoTest"
+[23,] "isWeights"   
+[24,] "optType"     
+[25,] "nIter"       
+[26,] "optStatus"   
+[27,] "startLoglik" 
+[28,] "mlLoglik"    
+[29,] "mlParam"     
+[30,] "gradient"    
+[31,] "gradL_OBS"   
+[32,] "gradientNorm"
+[33,] "invHessian"  
+[34,] "hessianType" 
+[35,] "mlDate"      
+[36,] "coefList"    
+[37,] "ela"         
+[38,] "mono"        
+> lapply( estTLShift$coefList, function(x) round( x, 3 ) )
+$alpha0
+(Intercept) 
+      3.834 
+
+$alphaVec
+[1] 0.216 0.352 0.433
+
+$betaVec
+[1] -2.335 -1.375 -0.630 -0.474 -0.173 -1.255
+
+$deltaVec
+[1] -0.091 -0.391
+
+$alphaMat
+       [,1]   [,2]   [,3]
+[1,] -0.088  0.108 -0.020
+[2,]  0.108  0.123 -0.231
+[3,] -0.020 -0.231  0.251
+
+$betaMat
+       [,1]   [,2]   [,3]   [,4]   [,5]   [,6]
+[1,]  2.436  0.108 -0.341  0.278 -0.036  0.359
+[2,]  0.108  0.609  0.255 -0.143  0.162  0.008
+[3,] -0.341  0.255  1.115 -0.367 -0.199  0.179
+[4,]  0.278 -0.143 -0.367  0.515  0.237 -0.023
+[5,] -0.036  0.162 -0.199  0.237  0.101  0.056
+[6,]  0.359  0.008  0.179 -0.023  0.056 -0.138
+
+$psiMat
+       [,1]   [,2]   [,3]   [,4]   [,5]   [,6]
+[1,]  0.092 -0.227  0.052 -0.076  0.173 -0.005
+[2,] -0.155  0.185 -0.095  0.181  0.100 -0.014
+[3,]  0.063  0.041  0.043 -0.105 -0.273  0.019
+
+> apply( estTLShift$mono, 2, table )
+      x_1 x_2 x_3 y_1 y_2 y_3 y_4 y_5 y_6 all_x all_y all
+FALSE  49   2  47   5 229  26 109  53 179    98   385 393
+TRUE  479 526 481 523 299 502 419 475 349   430   143 135
+> lapply( estTLShift$ela, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.21    0.09    0.21    0.21    0.32    0.63 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.11    0.39    0.50    0.51    0.62    1.21 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.34    0.15    0.29    0.29    0.41    1.07 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -1.06   -0.38   -0.23   -0.29   -0.15    0.07 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.55   -0.05    0.00   -0.01    0.02    0.52 
+
+$ela_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.65   -0.14   -0.08   -0.10    0.00    0.20 
+
+$ela_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.53   -0.14   -0.07   -0.08   -0.01    0.20 
+
+$ela_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.70   -0.21   -0.12   -0.14   -0.05    0.14 
+
+$ela_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.43   -0.12   -0.04   -0.05    0.02    0.27 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.85    1.29    1.54    1.59    1.87    3.25 
+
+$sela_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.24   -0.09   -0.07   -0.08   -0.06   -0.02 
+
+$sela_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -1.05   -0.39   -0.31   -0.33   -0.25   -0.07 
+
+> 
+> # calculate the dependent variable (logarithm of predicted distance)
+> MuseumsDk$distTLShift <- distRayCalc( 
++   xNames = xNames, yNames = yNames, sNames = zNames, 
++   data = MuseumsDk, coef = coef( estTLShift ) )
+> round( summary( MuseumsDk$distTLShift ), 3 )
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -0.987   0.012   0.232   0.228   0.444   1.776 
+> 
+> # calculate elasticities
+> elaTLShift <- distRayEla( xNames = xNames, yNames = yNames, sNames = zNames,
++   coef = coef( estTLShift ), data = MuseumsDk )
+> all.equal( elaTLShift, estTLShift$ela )
+[1] TRUE
+> lapply( elaTLShift, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.21    0.09    0.21    0.21    0.32    0.63 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.11    0.39    0.50    0.51    0.62    1.21 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.34    0.15    0.29    0.29    0.41    1.07 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -1.06   -0.38   -0.23   -0.29   -0.15    0.07 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.55   -0.05    0.00   -0.01    0.02    0.52 
+
+$ela_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.65   -0.14   -0.08   -0.10    0.00    0.20 
+
+$ela_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.53   -0.14   -0.07   -0.08   -0.01    0.20 
+
+$ela_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.70   -0.21   -0.12   -0.14   -0.05    0.14 
+
+$ela_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.43   -0.12   -0.04   -0.05    0.02    0.27 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.85    1.29    1.54    1.59    1.87    3.25 
+
+$sela_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.24   -0.09   -0.07   -0.08   -0.06   -0.02 
+
+$sela_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -1.05   -0.39   -0.31   -0.33   -0.25   -0.07 
+
+> 
+> # calculate derivatives
+> derivTLShift <- distRayDeriv( xNames = xNames, yNames = yNames, sNames = zNames,
++   coef = coef( estTLShift ), data = MuseumsDk )
+> lapply( derivTLShift, function(x) round( summary(x), 
++   3 - round( log( max( abs( x ) ), 10 ) ) ) )
+$d_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.21    0.12    0.52    0.84    1.17    9.76 
+
+$d_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.47    0.47    0.92    1.17    1.65    6.43 
+
+$d_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -20.95    0.22    0.52    0.45    1.05    2.75 
+
+$d_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -3.85   -0.92   -0.60   -0.69   -0.35    0.58 
+
+$d_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -1.009  -0.105  -0.015  -0.021   0.057   1.456 
+
+$d_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -2.353  -0.498  -0.235  -0.360  -0.096   1.381 
+
+$d_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -3.67   -0.26   -0.10   -0.21   -0.01    0.60 
+
+$d_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -6.26   -0.44   -0.18   -0.33   -0.08    2.42 
+
+$d_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -3.31   -0.29   -0.06   -0.14    0.05    4.83 
+
+$d_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+-0.0908 -0.0908 -0.0908 -0.0908 -0.0908 -0.0908 
+
+$d_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -0.391  -0.391  -0.391  -0.391  -0.391  -0.391 
+
+> 
+> # vector of unrestricted coefficients and their covariance matrix
+> nCoefTLShift <- length( coef( estTLShift ) ) - 2
+> uCoefTLShift <- coef( estTLShift )[ 1:nCoefTLShift ]
+> uCovInvTLShift <- solve( vcov( estTLShift )[ 1:nCoefTLShift, 1:nCoefTLShift ] )
+> 
+> # obtain the matrix and vector to impose monotonicity
+> restrTLShift <- distRayMonoRestr( 
++   xNames = xNames, yNames = yNames, sNames = zNames, 
++   data = MuseumsDk )
+> 
+> # obtain the restricted coefficients
+> minDistTLShift <- solve.QP( Dmat = uCovInvTLShift, dvec = rep( 0, nCoefTLShift ),
++   Amat = t( restrTLShift$RMat ), bvec = - restrTLShift$RMat %*% uCoefTLShift + restrTLShift$rVec )
+> rCoefTLShift <- minDistTLShift$solution + uCoefTLShift
+> round( rCoefTLShift, 3 )
+(Intercept)     alpha_1     alpha_2      beta_1      beta_2      beta_3 
+      3.129       0.256       0.408      -1.819      -0.817      -0.593 
+     beta_4      beta_5      beta_6     delta_1     delta_2   alpha_1_1 
+     -0.246      -0.343      -1.232      -0.082      -0.339      -0.039 
+  alpha_1_2   alpha_2_2    beta_1_1    beta_1_2    beta_1_3    beta_1_4 
+      0.039       0.064       2.198      -0.031      -0.243      -0.037 
+   beta_1_5    beta_1_6    beta_2_2    beta_2_3    beta_2_4    beta_2_5 
+      0.023       0.353       0.630       0.004      -0.058       0.068 
+   beta_2_6    beta_3_3    beta_3_4    beta_3_5    beta_3_6    beta_4_4 
+      0.012       0.989      -0.152       0.012       0.086       0.430 
+   beta_4_5    beta_4_6    beta_5_5    beta_5_6    beta_6_6     psi_1_1 
+      0.069       0.034       0.188       0.044      -0.155       0.064 
+    psi_1_2     psi_1_3     psi_1_4     psi_1_5     psi_1_6     psi_2_1 
+     -0.028      -0.050      -0.050       0.049      -0.036      -0.014 
+    psi_2_2     psi_2_3     psi_2_4     psi_2_5     psi_2_6 
+      0.021      -0.011       0.080      -0.004       0.001 
+> 
+> # calculate elasticities based on restricted coefficients
+> rElaTLShift <- distRayEla( xNames = xNames, yNames = yNames, sNames = zNames,
++   coef = rCoefTLShift, data = MuseumsDk )
+> lapply( rElaTLShift, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00    0.18    0.22    0.22    0.26    0.39 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.25    0.44    0.48    0.49    0.53    0.77 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00    0.24    0.30    0.30    0.35    0.64 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.87   -0.38   -0.24   -0.28   -0.17    0.00 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.60   -0.04   -0.02   -0.05   -0.01    0.00 
+
+$ela_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.60   -0.14   -0.10   -0.10   -0.04    0.00 
+
+$ela_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.44   -0.14   -0.08   -0.10   -0.05    0.00 
+
+$ela_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.56   -0.16   -0.10   -0.12   -0.06    0.00 
+
+$ela_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.45   -0.11   -0.07   -0.08   -0.04    0.00 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.81    1.20    1.42    1.42    1.62    2.32 
+
+$sela_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.23   -0.08   -0.06   -0.07   -0.05   -0.01 
+
+$sela_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.96   -0.33   -0.26   -0.28   -0.21   -0.06 
+
+> 
+> 
+> ### estimate a ray-based "full" Translog input distance function
+> estTLFull <- distRayEst( xNames = xNames, yNames = yNames, zNames = zNames,
++   data = MuseumsDk, form = "tl" )
+> cbind( round( coef( estTLFull ), 2 ) )
+                [,1]
+(Intercept)     3.60
+alpha_1        -0.04
+alpha_2         0.66
+beta_1         -0.90
+beta_2         -1.72
+beta_3         -0.88
+beta_4         -0.95
+beta_5         -0.41
+beta_6         -0.89
+delta_1         0.72
+delta_2        -2.26
+alpha_1_1      -0.07
+alpha_1_2       0.06
+alpha_2_2       0.17
+beta_1_1        0.62
+beta_1_2        0.34
+beta_1_3       -0.11
+beta_1_4        0.32
+beta_1_5        0.28
+beta_1_6        0.23
+beta_2_2        0.50
+beta_2_3        0.29
+beta_2_4       -0.01
+beta_2_5        0.14
+beta_2_6       -0.07
+beta_3_3        0.98
+beta_3_4       -0.32
+beta_3_5       -0.20
+beta_3_6        0.17
+beta_4_4        0.82
+beta_4_5        0.18
+beta_4_6       -0.11
+beta_5_5       -0.02
+beta_5_6        0.00
+beta_6_6       -0.09
+psi_1_1         0.14
+psi_1_2        -0.10
+psi_1_3         0.02
+psi_1_4        -0.06
+psi_1_5         0.25
+psi_1_6         0.01
+psi_2_1        -0.04
+psi_2_2        -0.04
+psi_2_3        -0.09
+psi_2_4         0.11
+psi_2_5        -0.01
+psi_2_6         0.02
+delta_1_1      -0.14
+delta_1_2      -0.28
+xi_1_1         -0.10
+xi_1_2          0.19
+xi_2_1          0.06
+xi_2_2         -0.40
+zeta_1_1       -0.68
+zeta_1_2        1.42
+zeta_2_1        0.12
+zeta_2_2        0.21
+zeta_3_1        0.06
+zeta_3_2       -0.13
+zeta_4_1        0.07
+zeta_4_2        0.22
+zeta_5_1        0.03
+zeta_5_2        0.08
+zeta_6_1        0.05
+zeta_6_2       -0.01
+Zu_(Intercept) -2.65
+Zv_(Intercept) -2.90
+> cbind( names( estTLFull ) )
+      [,1]          
+ [1,] "call"        
+ [2,] "formula"     
+ [3,] "S"           
+ [4,] "typeSfa"     
+ [5,] "Nobs"        
+ [6,] "nXvar"       
+ [7,] "scaling"     
+ [8,] "logDepVar"   
+ [9,] "nuZUvar"     
+[10,] "nvZVvar"     
+[11,] "nParm"       
+[12,] "udist"       
+[13,] "startVal"    
+[14,] "dataTable"   
+[15,] "olsParam"    
+[16,] "olsStder"    
+[17,] "olsSigmasq"  
+[18,] "olsLoglik"   
+[19,] "olsSkew"     
+[20,] "olsM3Okay"   
+[21,] "CoelliM3Test"
+[22,] "AgostinoTest"
+[23,] "isWeights"   
+[24,] "optType"     
+[25,] "nIter"       
+[26,] "optStatus"   
+[27,] "startLoglik" 
+[28,] "mlLoglik"    
+[29,] "mlParam"     
+[30,] "gradient"    
+[31,] "gradL_OBS"   
+[32,] "gradientNorm"
+[33,] "invHessian"  
+[34,] "hessianType" 
+[35,] "mlDate"      
+[36,] "coefList"    
+[37,] "ela"         
+[38,] "mono"        
+> lapply( estTLFull$coefList, function(x) round( x, 3 ) )
+$alpha0
+(Intercept) 
+      3.603 
+
+$alphaVec
+[1] -0.039  0.664  0.375
+
+$betaVec
+[1] -0.903 -1.718 -0.882 -0.949 -0.407 -0.894
+
+$deltaVec
+[1]  0.721 -2.263
+
+$alphaMat
+       [,1]   [,2]   [,3]
+[1,] -0.073  0.061  0.012
+[2,]  0.061  0.172 -0.233
+[3,]  0.012 -0.233  0.220
+
+$betaMat
+       [,1]   [,2]   [,3]   [,4]   [,5]   [,6]
+[1,]  0.619  0.340 -0.113  0.325  0.283  0.227
+[2,]  0.340  0.503  0.295 -0.009  0.140 -0.066
+[3,] -0.113  0.295  0.984 -0.316 -0.196  0.171
+[4,]  0.325 -0.009 -0.316  0.822  0.183 -0.114
+[5,]  0.283  0.140 -0.196  0.183 -0.024 -0.002
+[6,]  0.227 -0.066  0.171 -0.114 -0.002 -0.088
+
+$deltaMat
+       [,1]   [,2]
+[1,] -0.143 -0.276
+[2,] -0.276  0.000
+
+$psiMat
+       [,1]   [,2]   [,3]   [,4]   [,5]   [,6]
+[1,]  0.144 -0.102  0.021 -0.061  0.250  0.006
+[2,] -0.042 -0.043 -0.088  0.111 -0.015  0.017
+[3,] -0.102  0.144  0.067 -0.051 -0.235 -0.023
+
+$xiMat
+       [,1]   [,2]
+[1,] -0.101  0.192
+[2,]  0.057 -0.399
+[3,]  0.044  0.207
+
+$zetaMat
+       [,1]   [,2]
+[1,] -0.683  1.421
+[2,]  0.118  0.215
+[3,]  0.064 -0.125
+[4,]  0.071  0.224
+[5,]  0.030  0.083
+[6,]  0.045 -0.015
+
+> apply( estTLFull$mono, 2, table )
+      x_1 x_2 x_3 y_1 y_2 y_3 y_4 y_5 y_6 all_x all_y all
+FALSE  44   6  53  23 273  47  85  83 200    99   437 441
+TRUE  484 522 475 505 255 481 443 445 328   429    91  87
+> lapply( estTLFull$ela, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.20    0.09    0.19    0.20    0.30    0.70 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.18    0.37    0.51    0.51    0.64    1.26 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.31    0.15    0.31    0.29    0.44    1.22 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -1.16   -0.39   -0.22   -0.29   -0.12    0.15 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.38   -0.04    0.00   -0.01    0.03    0.35 
+
+$ela_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.70   -0.12   -0.07   -0.08    0.00    0.21 
+
+$ela_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.51   -0.14   -0.07   -0.08   -0.02    0.53 
+
+$ela_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.65   -0.19   -0.09   -0.12   -0.02    0.16 
+
+$ela_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.49   -0.11   -0.03   -0.05    0.03    0.27 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.92    1.41    1.64    1.69    1.93    3.87 
+
+$sela_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.69   -0.14    0.06    0.03    0.20    0.76 
+
+$sela_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -2.02   -0.71   -0.24   -0.35    0.03    0.88 
+
+> 
+> # calculate the dependent variable (logarithm of predicted distance)
+> MuseumsDk$distTLFull <- distRayCalc( 
++   xNames = xNames, yNames = yNames, zNames = zNames, 
++   data = MuseumsDk, coef = coef( estTLFull ) )
+> round( summary( MuseumsDk$distTLFull ), 3 )
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA     NaN      NA      NA     528 
+> 
+> # calculate elasticities
+> elaTLFull <- distRayEla( xNames = xNames, yNames = yNames, zNames = zNames,
++   coef = coef( estTLFull ), data = MuseumsDk, conDummy = conDummy )
+> all.equal( elaTLFull, estTLFull$ela )
+[1] TRUE
+> lapply( elaTLFull, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.20    0.09    0.19    0.20    0.30    0.70 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.18    0.37    0.51    0.51    0.64    1.26 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.31    0.15    0.31    0.29    0.44    1.22 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -1.16   -0.39   -0.22   -0.29   -0.12    0.15 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.38   -0.04    0.00   -0.01    0.03    0.35 
+
+$ela_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.70   -0.12   -0.07   -0.08    0.00    0.21 
+
+$ela_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.51   -0.14   -0.07   -0.08   -0.02    0.53 
+
+$ela_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.65   -0.19   -0.09   -0.12   -0.02    0.16 
+
+$ela_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.49   -0.11   -0.03   -0.05    0.03    0.27 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.92    1.41    1.64    1.69    1.93    3.87 
+
+$sela_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.69   -0.14    0.06    0.03    0.20    0.76 
+
+$sela_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -2.02   -0.71   -0.24   -0.35    0.03    0.88 
+
+> 
+> # calculate derivatives
+> derivTLFull <- distRayDeriv( xNames = xNames, yNames = yNames, zNames = zNames,
++   coef = coef( estTLFull ), data = MuseumsDk )
+> lapply( derivTLFull, function(x) round( summary(x), 
++   3 - round( log( max( abs( x ) ), 10 ) ) ) )
+$d_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA      NA      NA      NA         
+
+$d_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA      NA      NA      NA         
+
+$d_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA      NA      NA      NA         
+
+$d_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA      NA      NA      NA         
+
+$d_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA      NA      NA      NA         
+
+$d_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA      NA      NA      NA         
+
+$d_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA      NA      NA      NA         
+
+$d_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA      NA      NA      NA         
+
+$d_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA      NA      NA      NA         
+
+$d_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA      NA      NA      NA         
+
+$d_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+     NA      NA      NA      NA      NA      NA         
+
+> 
+> # vector of unrestricted coefficients and their covariance matrix
+> nCoefTLFull <- length( coef( estTLFull ) ) - 2
+> uCoefTLFull <- coef( estTLFull )[ 1:nCoefTLFull ]
+> uCovInvTLFull <- solve( vcov( estTLFull )[ 1:nCoefTLFull, 1:nCoefTLFull ] )
+> 
+> # obtain the matrix and vector to impose monotonicity
+> restrTLFull <- distRayMonoRestr( 
++   xNames = xNames, yNames = yNames, zNames = zNames, 
++   data = MuseumsDk, conDummy = conDummy )
+> 
+> # obtain the restricted coefficients
+> minDistTLFull <- solve.QP( Dmat = uCovInvTLFull, dvec = rep( 0, nCoefTLFull ),
++   Amat = t( restrTLFull$RMat ), bvec = - restrTLFull$RMat %*% uCoefTLFull + restrTLFull$rVec )
+> rCoefTLFull <- minDistTLFull$solution + uCoefTLFull
+> round( rCoefTLFull, 3 )
+(Intercept)     alpha_1     alpha_2      beta_1      beta_2      beta_3 
+      3.261       0.234       0.525      -1.592      -0.947      -0.847 
+     beta_4      beta_5      beta_6     delta_1     delta_2   alpha_1_1 
+     -0.526      -0.208      -1.175       0.456      -0.683      -0.051 
+  alpha_1_2   alpha_2_2    beta_1_1    beta_1_2    beta_1_3    beta_1_4 
+      0.028       0.089       1.786      -0.049      -0.061       0.052 
+   beta_1_5    beta_1_6    beta_2_2    beta_2_3    beta_2_4    beta_2_5 
+      0.055       0.308       0.683       0.059      -0.007       0.034 
+   beta_2_6    beta_3_3    beta_3_4    beta_3_5    beta_3_6    beta_4_4 
+      0.011       0.953      -0.131      -0.019       0.097       0.583 
+   beta_4_5    beta_4_6    beta_5_5    beta_5_6    beta_6_6     psi_1_1 
+      0.015       0.007       0.156       0.022      -0.141       0.014 
+    psi_1_2     psi_1_3     psi_1_4     psi_1_5     psi_1_6     psi_2_1 
+     -0.021      -0.041      -0.031       0.074      -0.002       0.016 
+    psi_2_2     psi_2_3     psi_2_4     psi_2_5     psi_2_6   delta_1_1 
+     -0.003      -0.007       0.037      -0.031      -0.007      -0.155 
+  delta_1_2      xi_1_1      xi_1_2      xi_2_1      xi_2_2    zeta_1_1 
+     -0.298      -0.060       0.173       0.016      -0.301      -0.354 
+   zeta_1_2    zeta_2_1    zeta_2_2    zeta_3_1    zeta_3_2    zeta_4_1 
+      0.625       0.088      -0.040       0.028      -0.102       0.004 
+   zeta_4_2    zeta_5_1    zeta_5_2    zeta_6_1    zeta_6_2 
+      0.132      -0.017       0.009       0.098      -0.085 
+> 
+> # calculate elasticities based on restricted coefficients
+> rElaTLFull <- distRayEla( xNames = xNames, yNames = yNames, zNames = zNames,
++   coef = rCoefTLFull, data = MuseumsDk, conDummy = conDummy )
+> lapply( rElaTLFull, function(x) round( summary(x), 2 ) )
+$ela_x_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00    0.17    0.21    0.23    0.27    0.52 
+
+$ela_x_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00    0.35    0.50    0.48    0.59    0.91 
+
+$ela_x_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00    0.22    0.29    0.29    0.36    0.82 
+
+$ela_y_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.91   -0.36   -0.23   -0.28   -0.16    0.00 
+
+$ela_y_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.54   -0.05   -0.02   -0.05   -0.01    0.00 
+
+$ela_y_3
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.73   -0.13   -0.09   -0.10   -0.04    0.00 
+
+$ela_y_4
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.44   -0.14   -0.09   -0.11   -0.06    0.00 
+
+$ela_y_5
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.54   -0.15   -0.10   -0.11   -0.05    0.00 
+
+$ela_y_6
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.45   -0.11   -0.06   -0.08   -0.03    0.00 
+
+$ela_scale
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.84    1.24    1.43    1.44    1.60    3.19 
+
+$sela_z_1
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.52   -0.16    0.09    0.04    0.21    0.60 
+
+$sela_z_2
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -1.40   -0.56   -0.14   -0.23    0.07    0.75 
+
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  2.628   0.156   2.774 

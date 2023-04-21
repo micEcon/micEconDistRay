@@ -19,23 +19,23 @@ distRayDeriv( xNames, yNames, zNames = NULL, sNames = NULL,
 
 \arguments{
   \item{xNames}{a vector of character strings 
-    containing the names of the variabels
+    containing the names of the variables
     that indicate the input quantities.}
   \item{yNames}{a vector of two or more character strings 
     containing the names of the variable 
     that indicate the output quantities.}
   \item{zNames}{an optional vector of character strings 
-    containing the names of \sQuote{environmental} variabes,
+    containing the names of \sQuote{environmental} variables,
     i.e., variables that affect the production possibility set
     (i.e., the feasible combinations of input-output quantities)
-    that---in case of a Translog functional form---should be interacted 
-    with the input quantities and the angels of the output vector.}
+    that---in the case of a Translog functional form---should be interacted 
+    with the input quantities and the angles of the output vector.}
   \item{sNames}{an optional vector of character strings 
     containing the names of \sQuote{environmental} variables,
     i.e., variables that affect the production possibility set
     (i.e., the feasible combinations of input-output quantities)
-    that---in case of a Translog functional form---should not be interacted 
-    with the input quantities and the angels of the output vector.}
+    that---in the case of a Translog functional form---should not be interacted 
+    with the input quantities and the angles of the output vector.}
   \item{coef}{numeric vector containing the coefficients.}
   \item{data}{data frame containing the data.}
   \item{form}{a character string that indicates the functional form;
@@ -47,7 +47,7 @@ distRayDeriv( xNames, yNames, zNames = NULL, sNames = NULL,
   \item{fixThetas}{logical value that indicates 
     whether undefined angles of the output  should be \sQuote{fixed}
     if the last two or more output quantities are zero 
-    for the some of the observations.}
+    for some of the observations.}
   \item{numDeriv}{logical value that indicates 
     whether derivatives (and elasticities) should be calculated
     by numerical finite-difference differentiation.}

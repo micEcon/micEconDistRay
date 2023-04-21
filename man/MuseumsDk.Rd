@@ -25,7 +25,7 @@
       \item{yr}{Year of the observation.}
       \item{units}{Number of visit sites.}
       \item{resp}{Whether or not the museum has special responsibilities
-        (0 = no special responsibiliries; 1 = at least one special responsiility).}
+        (0 = no special responsibiliries; 1 = at least one special responsibility).}
       \item{vis}{Number of (physical) visitors.}
       \item{aarc}{Number of articles published (archeology).}
       \item{ach}{Number of articles published (cultural history).}

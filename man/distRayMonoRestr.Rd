@@ -23,13 +23,13 @@ distRayMonoRestr( xNames, yNames, zNames = NULL, sNames = NULL,
     containing the names of \sQuote{environmental} variables,
     i.e., variables that affect the production possibility set
     (i.e., the feasible combinations of input-output quantities)
-    that---in case of a Translog functional form---should be interacted 
+    that---in the case of a Translog functional form---should be interacted 
     with the input quantities and the angles of the output vector.}
   \item{sNames}{an optional vector of character strings 
     containing the names of \sQuote{environmental} variables,
     i.e., variables that affect the production possibility set
     (i.e., the feasible combinations of input-output quantities)
-    that---in case of a Translog functional form---should not be interacted 
+    that---in the case of a Translog functional form---should not be interacted 
     with the input quantities and the angles of the output vector.}
   \item{data}{data frame containing the data.}
   \item{form}{a character string that indicates the functional form;

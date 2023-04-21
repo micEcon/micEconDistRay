@@ -24,7 +24,7 @@
       \item{munic}{Municipality, in which the museum is located.}
       \item{yr}{Year of the observation.}
       \item{units}{Number of visit sites.}
-      \item{resp}{whether or not the museum has special responsibilities
+      \item{resp}{Whether or not the museum has special responsibilities
         (0 = no special responsibiliries; 1 = at least one special responsiility).}
       \item{vis}{Number of (physical) visitors.}
       \item{aarc}{Number of articles published (archeology).}
@@ -37,8 +37,8 @@
       \item{ftesc}{Scientific labor (full-time equivalents).}
       \item{ftensc}{Non-scientific labor (full-time equivalents).}
       \item{expProperty}{Running and maintenance costs [1,000 DKK].}
-      \item{expCons}{conversation expenditure [1,000 DKK].}
-      \item{ipc}{Consumer price index in Denmark 
+      \item{expCons}{Conservation expenditure [1,000 DKK].}
+      \item{ipc}{Consumer Price Index in Denmark 
         (the value for year 2014 is set to 1).}
     }
 }
@@ -46,7 +46,7 @@
 \source{
   A subset of this data set is used for the empirical analysis in
   Price \& Henningsen (forthcoming).
-  It has been obtained from Statistics Denmark.
+  It has been obtained from Statistics Denmark and the Danish Ministry of Culture.
 }
 
 \references{

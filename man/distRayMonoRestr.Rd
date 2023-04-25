@@ -17,7 +17,7 @@ distRayMonoRestr( xNames, yNames, zNames = NULL, sNames = NULL,
     containing the names of the variables
     that indicate the input quantities.}
   \item{yNames}{a vector of two or more character strings 
-    containing the names of the variable 
+    containing the names of the variables 
     that indicate the output quantities.}
   \item{zNames}{an optional vector of character strings 
     containing the names of \sQuote{environmental} variables,

@@ -21,6 +21,12 @@ Type 'q()' to quit R.
 > # Productivity Analysis.
 > 
 > library( "micEconDistRay" )
+
+Please cite the 'micEconDistRay' package as:
+Price and Henningsen (forthcoming): A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: Derivation and an Empirical Application. Journal of Productivity Analysis.
+
+If you have questions, suggestions, or comments regarding the 'micEconDistRay' package, please use 'Issues' at the package's GitHub site:
+https://github.com/micEcon/micEconDistRay/issues
 > library( "quadprog" )
 > 
 > data( "MuseumsDk" )
@@ -1240,4 +1246,4 @@ $sela_z_2
 > 
 > proc.time()
    user  system elapsed 
-  2.336   0.140   2.468 
+  2.364   0.142   2.498 

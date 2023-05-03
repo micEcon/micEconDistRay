@@ -16,6 +16,12 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 Type 'q()' to quit R.
 
 > library( "micEconDistRay" )
+
+Please cite the 'micEconDistRay' package as:
+Price and Henningsen (forthcoming): A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: Derivation and an Empirical Application. Journal of Productivity Analysis.
+
+If you have questions, suggestions, or comments regarding the 'micEconDistRay' package, please use 'Issues' at the package's GitHub site:
+https://github.com/micEcon/micEconDistRay/issues
 > library( "quadprog" )
 > 
 > # load and prepare data set 
@@ -559,4 +565,4 @@ $ela_scale
 > 
 > proc.time()
    user  system elapsed 
-  1.637   0.111   1.740 
+  1.700   0.088   1.782 

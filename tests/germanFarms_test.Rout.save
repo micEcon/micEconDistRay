@@ -1,5 +1,5 @@
 
-R version 4.2.3 (2023-03-15) -- "Shortstop Beagle"
+R version 4.3.0 (2023-04-21) -- "Already Tomorrow"
 Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -34,6 +34,7 @@ beta_1         -0.62
 beta_2         -0.27
 Zu_(Intercept) -6.56
 Zv_(Intercept) -8.00
+> ## IGNORE_RDIFF_BEGIN
 > cbind( names( estCD ) )
       [,1]          
  [1,] "call"        
@@ -74,6 +75,7 @@ Zv_(Intercept) -8.00
 [36,] "coefList"    
 [37,] "ela"         
 [38,] "mono"        
+> ## IGNORE_RDIFF_END
 > lapply( estCD$coefList, function(x) round( x, 3 ) )
 $alpha0
 (Intercept) 
@@ -205,6 +207,7 @@ psi_2_1         -13.75
 psi_2_2          13.17
 Zu_(Intercept)   -6.75
 Zv_(Intercept)  -35.39
+> ## IGNORE_RDIFF_BEGIN
 > cbind( names( estTL ) )
       [,1]          
  [1,] "call"        
@@ -245,6 +248,7 @@ Zv_(Intercept)  -35.39
 [36,] "coefList"    
 [37,] "ela"         
 [38,] "mono"        
+> ## IGNORE_RDIFF_END
 > lapply( estTL$coefList, function(x) round( x, 3 ) )
 $alpha0
 (Intercept) 
@@ -371,4 +375,4 @@ $d_y_2
 > 
 > proc.time()
    user  system elapsed 
-  2.735   0.136   2.862 
+  2.609   0.168   2.773 

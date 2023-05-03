@@ -1,5 +1,5 @@
 
-R version 4.2.3 (2023-03-15) -- "Shortstop Beagle"
+R version 4.3.0 (2023-04-21) -- "Already Tomorrow"
 Copyright (C) 2023 The R Foundation for Statistical Computing
 Platform: x86_64-pc-linux-gnu (64-bit)
 
@@ -29,7 +29,7 @@ Type 'q()' to quit R.
 +   yNames = c( "qApples", "qOtherOut" ),
 +   data = appleProdFr86, form = "cd" )
 Warning message:
-The residuals of the OLS are  right-skewed. This may indicate the absence of inefficiency or
+The residuals of the OLS are right-skewed. This may indicate the absence of inefficiency or
   model misspecification or sample 'bad luck' 
 > cbind( round( coef( estCD ), 2 ) )
                  [,1]
@@ -40,6 +40,7 @@ beta_1          -0.03
 beta_2          -0.39
 Zu_(Intercept)  -9.59
 Zv_(Intercept)  -2.19
+> ## IGNORE_RDIFF_BEGIN
 > cbind( names( estCD ) )
       [,1]          
  [1,] "call"        
@@ -80,6 +81,7 @@ Zv_(Intercept)  -2.19
 [36,] "coefList"    
 [37,] "ela"         
 [38,] "mono"        
+> ## IGNORE_RDIFF_END
 > lapply( estCD$coefList, function(x) round( x, 3 ) )
 $alpha0
 (Intercept) 
@@ -297,6 +299,7 @@ psi_2_1         0.38
 psi_2_2         0.08
 Zu_(Intercept) -2.14
 Zv_(Intercept) -3.35
+> ## IGNORE_RDIFF_BEGIN
 > cbind( names( estTL ) )
       [,1]          
  [1,] "call"        
@@ -337,6 +340,7 @@ Zv_(Intercept) -3.35
 [36,] "coefList"    
 [37,] "ela"         
 [38,] "mono"        
+> ## IGNORE_RDIFF_END
 > lapply( estTL$coefList, function(x) round( x, 3 ) )
 $alpha0
 (Intercept) 
@@ -553,4 +557,4 @@ $ela_scale
 > 
 > proc.time()
    user  system elapsed 
-  2.654   0.108   2.765 
+  1.696   0.081   1.768 

@@ -9,7 +9,9 @@ estCD <- distRayEst( xNames = c( "land", "qLabor", "qVarInput" ),
   yNames = c( "vCrop", "vAnimal" ),
   data = germanFarms, form = "cd" )
 cbind( round( coef( estCD ), 2 ) )
+## IGNORE_RDIFF_BEGIN
 cbind( names( estCD ) )
+## IGNORE_RDIFF_END
 lapply( estCD$coefList, function(x) round( x, 3 ) )
 apply( estCD$mono, 2, table )
 lapply( estCD$ela, function(x) round( summary(x), 2 ) )
@@ -40,7 +42,9 @@ estTL <- suppressWarnings( distRayEst( xNames = c( "land", "qLabor", "qVarInput"
   yNames = c( "vCrop", "vAnimal" ),
   data = germanFarms ) )
 cbind( round( coef( estTL ), 2 ) )
+## IGNORE_RDIFF_BEGIN
 cbind( names( estTL ) )
+## IGNORE_RDIFF_END
 lapply( estTL$coefList, function(x) round( x, 3 ) )
 apply( estTL$mono, 2, table )
 lapply( estTL$ela, function(x) round( summary(x), 2 ) )

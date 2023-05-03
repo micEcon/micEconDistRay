@@ -40,7 +40,9 @@ for( n in c( xNames, yNames ) ) {
 estCD <- distRayEst( xNames = xNames, yNames = yNames, zNames = zNames,
   data = MuseumsDk, form = "cd" )
 cbind( round( coef( estCD ), 2 ) )
+## IGNORE_RDIFF_BEGIN
 cbind( names( estCD ) )
+## IGNORE_RDIFF_END
 lapply( estCD$coefList, function(x) round( x, 3 ) )
 apply( estCD$mono, 2, table )
 lapply( estCD$ela, function(x) round( summary(x), 2 ) )
@@ -90,7 +92,9 @@ lapply( rElaCD, function(x) round( summary(x), 2 ) )
 estTLShift <- distRayEst( xNames = xNames, yNames = yNames, sNames = zNames,
   data = MuseumsDk, form = "tl" )
 cbind( round( coef( estTLShift ), 2 ) )
+## IGNORE_RDIFF_BEGIN
 cbind( names( estTLShift ) )
+## IGNORE_RDIFF_END
 lapply( estTLShift$coefList, function(x) round( x, 3 ) )
 apply( estTLShift$mono, 2, table )
 lapply( estTLShift$ela, function(x) round( summary(x), 2 ) )
@@ -139,7 +143,9 @@ lapply( rElaTLShift, function(x) round( summary(x), 2 ) )
 estTLFull <- distRayEst( xNames = xNames, yNames = yNames, zNames = zNames,
   data = MuseumsDk, form = "tl" )
 cbind( round( coef( estTLFull ), 2 ) )
+## IGNORE_RDIFF_BEGIN
 cbind( names( estTLFull ) )
+## IGNORE_RDIFF_END
 lapply( estTLFull$coefList, function(x) round( x, 3 ) )
 apply( estTLFull$mono, 2, table )
 lapply( estTLFull$ela, function(x) round( summary(x), 2 ) )

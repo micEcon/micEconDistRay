@@ -5,7 +5,8 @@
 
 \description{
    Calculate distance elasticities and derivatives 
-   based on ray-based input distance functions.
+   based on ray-based input distance functions
+   (Price & Henningsen, forthcomong).
 }
 
 \usage{
@@ -63,6 +64,13 @@ distRayDeriv( xNames, yNames, zNames = NULL, sNames = NULL,
 }
 
 \author{Arne Henningsen and Juan José Price}
+
+\references{
+  Price, J.J. & Henningsen, A. (forthcoming):
+  A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: 
+  Derivation and an Empirical Application.
+  Journal of Productivity Analysis.
+}
 
 \examples{
 # load and prepare data set 

@@ -4,7 +4,8 @@
 
 \description{
    Empirically analyse multiple-input-multiple-output production technologies 
-   by estimating a ray-based input distance function.
+   by estimating a ray-based input distance function
+   (Price & Henningsen, forthcomong).
 }
 
 \usage{
@@ -55,6 +56,13 @@ distRayEst( xNames, yNames, zNames = NULL, sNames = NULL,
 }
 
 \author{Arne Henningsen and Juan José Price}
+
+\references{
+  Price, J.J. & Henningsen, A. (forthcoming):
+  A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: 
+  Derivation and an Empirical Application.
+  Journal of Productivity Analysis.
+}
 
 \examples{
 # load and prepare data set 

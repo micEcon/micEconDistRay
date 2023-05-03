@@ -4,7 +4,8 @@
 
 \description{
    Calculate the dependent variable (logarithmic distance) 
-   of a ray-based input distance function.
+   of a ray-based input distance function
+   (Price & Henningsen, forthcomong).
 }
 
 \usage{
@@ -50,6 +51,13 @@ distRayCalc( xNames, yNames, zNames = NULL, sNames = NULL,
 }
 
 \author{Arne Henningsen and Juan José Price}
+
+\references{
+  Price, J.J. & Henningsen, A. (forthcoming):
+  A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: 
+  Derivation and an Empirical Application.
+  Journal of Productivity Analysis.
+}
 
 \examples{
 # load and prepare data set 

@@ -31,16 +31,18 @@ Type 'q()' to quit R.
 Warning message:
 The residuals of the OLS are right-skewed. This may indicate the absence of inefficiency or
   model misspecification or sample 'bad luck' 
-> cbind( round( coef( estCD ), 2 ) )
+> cbind( round( coef( estCD )[ !grepl( "(Intercept)", names( coef( estCD ) ) ) ], 2 ) )
+         [,1]
+alpha_1  0.08
+alpha_2  0.62
+beta_1  -0.03
+beta_2  -0.39
+> ## IGNORE_RDIFF_BEGIN
+> cbind( round( coef( estCD )[ grepl( "(Intercept)", names( coef( estCD ) ) ) ], 2 ) )
                  [,1]
 (Intercept)    -11.12
-alpha_1          0.08
-alpha_2          0.62
-beta_1          -0.03
-beta_2          -0.39
 Zu_(Intercept)  -9.59
 Zv_(Intercept)  -2.19
-> ## IGNORE_RDIFF_BEGIN
 > cbind( names( estCD ) )
       [,1]          
  [1,] "call"        
@@ -557,4 +559,4 @@ $ela_scale
 > 
 > proc.time()
    user  system elapsed 
-  1.696   0.081   1.768 
+  1.637   0.111   1.740 

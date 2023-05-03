@@ -11,8 +11,9 @@ appleProdFr86$qMat <- appleProdFr86$vMat / appleProdFr86$pMat
 estCD <- distRayEst( xNames = c( "qCap", "qLab", "qMat" ),
   yNames = c( "qApples", "qOtherOut" ),
   data = appleProdFr86, form = "cd" )
-cbind( round( coef( estCD ), 2 ) )
+cbind( round( coef( estCD )[ !grepl( "(Intercept)", names( coef( estCD ) ) ) ], 2 ) )
 ## IGNORE_RDIFF_BEGIN
+cbind( round( coef( estCD )[ grepl( "(Intercept)", names( coef( estCD ) ) ) ], 2 ) )
 cbind( names( estCD ) )
 ## IGNORE_RDIFF_END
 lapply( estCD$coefList, function(x) round( x, 3 ) )

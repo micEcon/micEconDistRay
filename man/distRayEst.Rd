@@ -9,7 +9,7 @@
 
 \usage{
 distRayEst( xNames, yNames, zNames = NULL, sNames = NULL, 
-  eNames = NULL, data, form = "tl", method = "sfa", fixThetas = FALSE, \dots )
+  data, form = "tl", method = "sfa", fixThetas = FALSE, \dots )
 }
 
 \arguments{
@@ -31,8 +31,6 @@ distRayEst( xNames, yNames, zNames = NULL, sNames = NULL,
     (i.e., the feasible combinations of input-output quantities)
     that---in the case of a Translog functional form---should not be interacted 
     with the input quantities and the angles of the output vector.}
-  \item{eNames}{an optional vector of character strings 
-    containing ???.}
   \item{data}{data frame containing the data.}
   \item{form}{a character string that indicates the functional form;
     currently, \code{"cd"} for the Cobb-Douglas functional form

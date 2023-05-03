@@ -1,4 +1,4 @@
-distRayMakeFormula <- function( nInp, nOut, nCon = 0, nShi = 0, nEff = 0,
+distRayMakeFormula <- function( nInp, nOut, nCon = 0, nShi = 0,
   form, conDummy = NULL ) {
 
   #### check arguments nInp, nOut, nCon, nShi, conDummy ####
@@ -88,12 +88,6 @@ distRayMakeFormula <- function( nInp, nOut, nCon = 0, nShi = 0, nEff = 0,
         }
       }
     }
-  }
-  
-  # phi_i
-  if( nEff > 0 ) {
-    estForm <- paste( estForm, "|", paste0( "phi_", 1:nEff, 
-      collapse = " + " ), "- 1" )
   }
   
   # convert the character string to a formula object

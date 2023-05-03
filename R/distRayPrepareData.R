@@ -1,5 +1,5 @@
 distRayPrepareData <- function( xNames, yNames, 
-  zNames = NULL, sNames = NULL, eNames = NULL,
+  zNames = NULL, sNames = NULL,
   data, form, fixThetas = FALSE ) {
 
   #### check arguments xNames, yNames, zNames, and sNames ####
@@ -36,8 +36,7 @@ distRayPrepareData <- function( xNames, yNames,
   nOut <- length( yNames )
   nCon <- length( zNames )
   nShi <- length( sNames )
-  nEff <- length( eNames )
-  
+
   
   #### calculate angles and distances of output quantities ####
   datY <- distRayCalcYVar( yNames, data, calcOmegas = TRUE, 
@@ -128,12 +127,5 @@ distRayPrepareData <- function( xNames, yNames,
     }
   }
   
-  if( nEff > 0 ) {
-    # phi_i 
-    for( i in 1:nEff ) {
-      datEst[[ paste0( "phi_", i ) ]] <- data[[ eNames[i] ]]
-    }
-  }
-
   return( datEst )
 }

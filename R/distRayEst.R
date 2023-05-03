@@ -1,5 +1,5 @@
 distRayEst <- function( xNames, yNames, zNames = NULL, sNames = NULL, 
-  eNames = NULL, data, form = "tl", method = "sfa", fixThetas = FALSE, ... ) {
+  data, form = "tl", method = "sfa", fixThetas = FALSE, ... ) {
   
   #### check arguments xNames, yNames, zNames, and sNames ####
   #### and give an informative error message if something is incorrect
@@ -43,21 +43,16 @@ distRayEst <- function( xNames, yNames, zNames = NULL, sNames = NULL,
       paste( supportedMethods, collapse = ", " ) )
   }
   rm( supportedMethods )
-  if( method == "lm" && !is.null( eNames ) ) {
-    eNames <- NULL
-    warning( "ignoring argument 'eNames' because argument 'method' is 'lm'" )
-  }  
-  
+
   #### numbers of inputs, outputs, control variables and shifter variables ####
   nInp <- length( xNames )
   nOut <- length( yNames )
   nCon <- length( zNames )
   nShi <- length( sNames )
-  nEff <- length( eNames )  
-  
+
   #### create data set for the estimation ####
   datEst <- distRayPrepareData( xNames = xNames, yNames = yNames, 
-    zNames = zNames, sNames = sNames, eNames = eNames,
+    zNames = zNames, sNames = sNames,
     data = data, form = form, fixThetas = fixThetas )
   
   #### create formula object for the estimation ####
@@ -71,7 +66,7 @@ distRayEst <- function( xNames, yNames, zNames = NULL, sNames = NULL,
     }
   }
   formulaEst <- distRayMakeFormula( nInp = nInp, nOut = nOut, nCon = nCon, 
-    nShi = nShi, nEff = nEff, form = form, conDummy = conDummy )
+    nShi = nShi, form = form, conDummy = conDummy )
   
   
   #### estimate the stochastic ray distance function ####

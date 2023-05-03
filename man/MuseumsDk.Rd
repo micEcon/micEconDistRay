@@ -45,12 +45,12 @@
 
 \source{
   A subset of this data set is used for the empirical analysis in
-  Price \& Henningsen (forthcoming).
+  Price & Henningsen (forthcoming).
   It has been obtained from Statistics Denmark and the Danish Ministry of Culture.
 }
 
 \references{
-  Price, J.J. \& Henningsen, A. (forthcoming):
+  Price, J.J. & Henningsen, A. (forthcoming):
   A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: 
   Derivation and an Empirical Application.
   Journal of Productivity Analysis.

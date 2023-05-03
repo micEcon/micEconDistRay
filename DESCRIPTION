@@ -8,13 +8,11 @@ Authors@R: c( person( "Arne", "Henningsen", role = c( "aut", "cre" ),
 Depends: R (>= 4.2.0)
 Imports: sfaR (>= 0.1.1), stats (>= 4.2.0)
 Suggests: micEcon (>= 0.6-18), quadprog (>= 1.5-8)
-Description: Tools for econometric analysis 
-   of multiple-input-multiple-output production technologies
-   with ray-based input distance functions
-   as suggested by Price and Henningsen (2022): 
-   "A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: 
-   Derivation and an Empirical Application",
-   <https://ideas.repec.org/p/foi/wpaper/2022_03.html>.
+Description: Tools for econometric analysis of multiple-input-multiple-output 
+  production technologies with ray-based input distance functions as suggested 
+  by Price and Henningsen (2022): "A Ray-Based Input Distance Function to Model 
+  Zero-Valued Output Quantities: Derivation and an Empirical Application",
+  <https://ideas.repec.org/p/foi/wpaper/2022_03.html>.
 License: GPL (>= 2)
 Encoding: UTF-8
 URL: https://github.com/micEcon/micEconDistRay

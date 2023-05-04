@@ -6,7 +6,7 @@
 \description{
    Calculate distance elasticities and derivatives 
    based on ray-based input distance functions
-   (Price & Henningsen, forthcomong).
+   (Price & Henningsen, forthcoming).
 }
 
 \usage{

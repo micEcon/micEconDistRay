@@ -5,7 +5,7 @@
 \description{
    Create a matrix and vector for imposing monotonicity 
    on a ray-based input distance function
-   (Price & Henningsen, forthcomong).
+   (Price & Henningsen, forthcoming).
 }
 
 \usage{

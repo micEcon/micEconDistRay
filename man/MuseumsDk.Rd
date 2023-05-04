@@ -25,14 +25,14 @@
       \item{yr}{Year of the observation.}
       \item{units}{Number of visit sites.}
       \item{resp}{Whether or not the museum has special responsibilities
-        (0 = no special responsibiliries; 1 = at least one special responsibility).}
+        (0 = no special responsibilities; 1 = at least one special responsibility).}
       \item{vis}{Number of (physical) visitors.}
       \item{aarc}{Number of articles published (archeology).}
       \item{ach}{Number of articles published (cultural history).}
       \item{aah}{Number of articles published (art history).}
       \item{anh}{Number of articles published (natural history).}
       \item{exh}{Number of temporary exhibitions.}
-      \item{edu}{Number of primary school classes on educational visits to the museum	.}
+      \item{edu}{Number of primary school classes on educational visits to the museum.}
       \item{ev}{Number of events other than exhibitions.}
       \item{ftesc}{Scientific labor (full-time equivalents).}
       \item{ftensc}{Non-scientific labor (full-time equivalents).}

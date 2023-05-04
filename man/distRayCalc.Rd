@@ -5,7 +5,7 @@
 \description{
    Calculate the dependent variable (logarithmic distance) 
    of a ray-based input distance function
-   (Price & Henningsen, forthcomong).
+   (Price & Henningsen, forthcoming).
 }
 
 \usage{

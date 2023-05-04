@@ -5,7 +5,7 @@
 \description{
    Empirically analyse multiple-input-multiple-output production technologies 
    by estimating a ray-based input distance function
-   (Price & Henningsen, forthcomong).
+   (Price & Henningsen, forthcoming).
 }
 
 \usage{

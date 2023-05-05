@@ -1,6 +1,6 @@
 Package: micEconDistRay
 Version: 0.1-0
-Date: 2023-04-09
+Date: 2023-05-05
 Title: Econometric Production Analysis with Ray-Based Distance Functions
 Authors@R: c( person( "Arne", "Henningsen", role = c( "aut", "cre" ), 
     email = "arne.henningsen@gmail.com" ),

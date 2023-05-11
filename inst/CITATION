@@ -4,7 +4,7 @@ bibentry(
   bibtype = "TechReport",
   title = "A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: Derivation and an Empirical Application",
   author = c( 
-    person( "Juan José", "Price" ),
+    person( c( "Juan", "José" ), "Price" ),
     person( "Arne", "Henningsen" ) 
   ),
   year = 2022,

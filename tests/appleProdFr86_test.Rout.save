@@ -30,6 +30,17 @@ https://github.com/micEcon/micEconDistRay/issues
 > appleProdFr86$qLab <- appleProdFr86$vLab / appleProdFr86$pLab
 > appleProdFr86$qMat <- appleProdFr86$vMat / appleProdFr86$pMat
 > 
+> # inputs
+> xNames <- c( "qCap", "qLab", "qMat" )
+> # outputs 
+> yNames <- c( "qApples", "qOtherOut" )
+> 
+> # mean-scaling input and output quantities
+> for( n in c( xNames, yNames ) ) {
++   appleProdFr86[[ n ]] <- appleProdFr86[[ n ]] / mean( appleProdFr86[[ n ]] ) 
++ }
+> 
+> 
 > ### Cobb-Douglas ray-based input distance function
 > estCD <- distRayEst( xNames = c( "qCap", "qLab", "qMat" ),
 +   yNames = c( "qApples", "qOtherOut" ),
@@ -39,16 +50,16 @@ The residuals of the OLS are right-skewed. This may indicate the absence of inef
   model misspecification or sample 'bad luck' 
 > cbind( round( coef( estCD )[ !grepl( "(Intercept)", names( coef( estCD ) ) ) ], 2 ) )
          [,1]
-alpha_1  0.08
+alpha_1  0.09
 alpha_2  0.62
-beta_1  -0.03
+beta_1   0.17
 beta_2  -0.39
 > ## IGNORE_RDIFF_BEGIN
 > cbind( round( coef( estCD )[ grepl( "(Intercept)", names( coef( estCD ) ) ) ], 2 ) )
-                 [,1]
-(Intercept)    -11.12
-Zu_(Intercept)  -9.59
-Zv_(Intercept)  -2.19
+                [,1]
+(Intercept)     0.07
+Zu_(Intercept) -9.96
+Zv_(Intercept) -2.20
 > cbind( names( estCD ) )
       [,1]          
  [1,] "call"        
@@ -90,16 +101,16 @@ Zv_(Intercept)  -2.19
 [37,] "ela"         
 [38,] "mono"        
 > ## IGNORE_RDIFF_END
-> lapply( estCD$coefList, function(x) round( x, 3 ) )
+> lapply( estCD$coefList, function(x) round( x, 2 ) )
 $alpha0
 (Intercept) 
-    -11.116 
+       0.07 
 
 $alphaVec
-[1] 0.082 0.615 0.303
+[1] 0.09 0.62 0.30
 
 $betaVec
-[1] -0.031 -0.388
+[1]  0.17 -0.39
 
 > apply( estCD$mono, 2, table )
 $x_1
@@ -119,13 +130,13 @@ TRUE
 
 $y_1
 
-FALSE  TRUE 
-    9   131 
+TRUE 
+ 140 
 
 $y_2
 
-TRUE 
- 140 
+FALSE  TRUE 
+   25   115 
 
 $all_x
 
@@ -135,17 +146,17 @@ TRUE
 $all_y
 
 FALSE  TRUE 
-    9   131 
+   25   115 
 
 $all
 
 FALSE  TRUE 
-    9   131 
+   25   115 
 
 > lapply( estCD$ela, function(x) round( summary(x), 2 ) )
 $ela_x_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   0.08    0.08    0.08    0.08    0.08    0.08 
+   0.09    0.09    0.09    0.09    0.09    0.09 
 
 $ela_x_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -157,28 +168,24 @@ $ela_x_3
 
 $ela_y_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.39   -0.33   -0.18   -0.19   -0.03    0.00 
+  -0.41   -0.33   -0.14   -0.18   -0.04    0.00 
 
 $ela_y_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.39   -0.36   -0.21   -0.20   -0.06    0.00 
+  -0.39   -0.35   -0.25   -0.21   -0.06    0.02 
 
 $ela_scale
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   2.58    2.58    2.58    2.58    2.58    2.58 
+   2.56    2.56    2.56    2.56    2.56    2.56 
 
 > 
 > # calculate the dependent variable (logarithm of predicted distance)
 > appleProdFr86$distCD <- distRayCalc( xNames = c( "qCap", "qLab", "qMat" ),
 +   yNames = c( "qApples", "qOtherOut" ), data = appleProdFr86, 
 +   coef = coef( estCD ), form = "cd" )
-> round( summary( appleProdFr86$distCD ), 3 )
+> round( summary( appleProdFr86$distCD ), 2 )
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- -0.757  -0.230   0.010   0.007   0.250   0.787 
- -0.757  -0.231   0.010   0.006   0.250   0.787 # M1
- -0.753  -0.226   0.014   0.011   0.254   0.791 # MKL
- -0.758  -0.231   0.010   0.006   0.250   0.786 # noLD
- -0.757  -0.230   0.011   0.007   0.251   0.787 # BLAS
+  -0.76   -0.23    0.01    0.01    0.24    0.76 
 > 
 > # calculate elasticities
 > elaCD <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),
@@ -189,7 +196,7 @@ $ela_scale
 > lapply( elaCD, function(x) round( summary(x), 2 ) )
 $ela_x_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   0.08    0.08    0.08    0.08    0.08    0.08 
+   0.09    0.09    0.09    0.09    0.09    0.09 
 
 $ela_x_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -201,54 +208,41 @@ $ela_x_3
 
 $ela_y_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.39   -0.33   -0.18   -0.19   -0.03    0.00 
+  -0.41   -0.33   -0.14   -0.18   -0.04    0.00 
 
 $ela_y_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.39   -0.36   -0.21   -0.20   -0.06    0.00 
+  -0.39   -0.35   -0.25   -0.21   -0.06    0.02 
 
 $ela_scale
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   2.58    2.58    2.58    2.58    2.58    2.58 
+   2.56    2.56    2.56    2.56    2.56    2.56 
 
 > 
 > # calculate derivatives
 > derivCD <- distRayDeriv( xNames = c( "qCap", "qLab", "qMat" ),
 +   yNames = c( "qApples", "qOtherOut" ),
 +   coef = coef( estCD ), data = appleProdFr86, form = "cd" )
-> lapply( derivCD, function(x) round( summary(x), 
-+   3 - round( log( max( abs( x ) ), 10 ) ) ) )
+> lapply( derivCD, function(x) round( summary(x), 2 ) )
 $d_x_1
-     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
-2.000e-07 7.100e-07 1.060e-06 1.620e-06 1.740e-06 1.159e-05 
-2.000e-07 7.100e-07 1.070e-06 1.630e-06 1.750e-06 1.164e-05 # MKL
-2.00e-07  7.10e-07  1.06e-06  1.62e-06  1.74e-06  1.16e-05  # BLAS
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.02    0.07    0.11    0.16    0.17    1.20 
 
 $d_x_2
-    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-1.01e-06 2.39e-06 3.05e-06 3.33e-06 3.91e-06 8.92e-06 
-1.01e-06 2.40e-06 3.06e-06 3.34e-06 3.93e-06 8.96e-06 # MKL
-1.01e-06 2.40e-06 3.05e-06 3.33e-06 3.91e-06 8.93e-06 # BLAS
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.24    0.56    0.73    0.78    0.91    2.09 
 
 $d_x_3
-    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-4.30e-06 9.40e-06 1.27e-05 1.59e-05 1.77e-05 6.54e-05 
-4.30e-06 9.30e-06 1.27e-05 1.59e-05 1.77e-05 6.54e-05 # M1
-4.40e-06 9.40e-06 1.28e-05 1.60e-05 1.77e-05 6.57e-05 # MKL
-4.30e-06 9.30e-06 1.27e-05 1.59e-05 1.77e-05 6.53e-05 # noLD
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.12    0.26    0.35    0.44    0.50    1.78 
 
 $d_y_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- -2.434  -0.141  -0.081  -0.139  -0.035   0.073 
- -2.444  -0.142  -0.081  -0.139  -0.035   0.073 # MKL
- -2.433  -0.141  -0.081  -0.139  -0.035   0.073 # noLD
- -2.435  -0.141  -0.081  -0.139  -0.035   0.073 # BLAS
+  -6.07   -0.44   -0.27   -0.46   -0.15   -0.02 
 
 $d_y_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -4.25   -0.27   -0.11   -0.29   -0.04    0.00 
-  -4.26   -0.27   -0.11   -0.29   -0.04    0.00 # MKL
-  -4.24   -0.27   -0.11   -0.29   -0.04    0.00 # noLD
+  -6.82   -0.40   -0.19   -0.44   -0.05    0.15 
 
 > 
 > # vector of unrestricted coefficients and their covariance matrix
@@ -265,12 +259,9 @@ $d_y_2
 > minDistCD <- solve.QP( Dmat = uCovInvCD, dvec = rep( 0, nCoefCD ),
 +   Amat = t( restrCD$RMat ), bvec = - restrCD$RMat %*% uCoefCD + restrCD$rVec )
 > rCoefCD <- minDistCD$solution + uCoefCD
-> round( rCoefCD, 3 )
+> round( rCoefCD, 2 )
 (Intercept)     alpha_1     alpha_2      beta_1      beta_2 
-    -11.145       0.080       0.617       0.000      -0.380 
-    -11.146       0.080       0.617       0.000      -0.380 # M1
-    -11.141       0.080       0.617       0.000      -0.380 # MKL
-    -11.146       0.080       0.617       0.000      -0.380 # noLD
+       0.23        0.09        0.62        0.00       -0.42 
 > 
 > # calculate elasticities based on restricted coefficients
 > rElaCD <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),
@@ -279,7 +270,7 @@ $d_y_2
 > lapply( rElaCD, function(x) round( summary(x), 2 ) )
 $ela_x_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   0.08    0.08    0.08    0.08    0.08    0.08 
+   0.09    0.09    0.09    0.09    0.09    0.09 
 
 $ela_x_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
@@ -287,19 +278,19 @@ $ela_x_2
 
 $ela_x_3
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-    0.3     0.3     0.3     0.3     0.3     0.3 
+   0.29    0.29    0.29    0.29    0.29    0.29 
 
 $ela_y_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.38   -0.34   -0.19   -0.19   -0.04    0.00 
+  -0.42   -0.27   -0.08   -0.15   -0.01    0.00 
 
 $ela_y_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.38   -0.34   -0.19   -0.19   -0.04    0.00 
+  -0.42   -0.41   -0.34   -0.27   -0.15    0.00 
 
 $ela_scale
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   2.63    2.63    2.63    2.63    2.63    2.63 
+   2.38    2.38    2.38    2.38    2.38    2.38 
 
 > 
 > 
@@ -309,23 +300,23 @@ $ela_scale
 +   data = appleProdFr86 )
 > cbind( round( coef( estTL ), 2 ) )
                 [,1]
-(Intercept)    -9.37
-alpha_1        -0.03
-alpha_2         0.08
-beta_1         -2.07
-beta_2         -0.69
-alpha_1_1       0.18
-alpha_1_2       0.00
-alpha_2_2       0.10
-beta_1_1        1.28
-beta_1_2        0.27
-beta_2_2       -0.09
-psi_1_1        -0.08
-psi_1_2        -0.04
-psi_2_1         0.38
-psi_2_2         0.08
-Zu_(Intercept) -2.14
-Zv_(Intercept) -3.35
+(Intercept)     0.83
+alpha_1         0.11
+alpha_2         0.44
+beta_1         -0.94
+beta_2         -0.77
+alpha_1_1       0.16
+alpha_1_2       0.03
+alpha_2_2       0.04
+beta_1_1        1.10
+beta_1_2        0.37
+beta_2_2       -0.06
+psi_1_1        -0.02
+psi_1_2        -0.02
+psi_2_1         0.21
+psi_2_2         0.06
+Zu_(Intercept) -2.01
+Zv_(Intercept) -3.47
 > ## IGNORE_RDIFF_BEGIN
 > cbind( names( estTL ) )
       [,1]          
@@ -368,39 +359,39 @@ Zv_(Intercept) -3.35
 [37,] "ela"         
 [38,] "mono"        
 > ## IGNORE_RDIFF_END
-> lapply( estTL$coefList, function(x) round( x, 3 ) )
+> lapply( estTL$coefList, function(x) round( x, 2 ) )
 $alpha0
 (Intercept) 
-     -9.368 
+       0.83 
 
 $alphaVec
-[1] -0.028  0.079  0.949
+[1] 0.11 0.44 0.45
 
 $betaVec
-[1] -2.065 -0.687
+[1] -0.94 -0.77
 
 $alphaMat
-       [,1]   [,2]   [,3]
-[1,]  0.176 -0.002 -0.174
-[2,] -0.002  0.102 -0.100
-[3,] -0.174 -0.100  0.273
+      [,1]  [,2]  [,3]
+[1,]  0.16  0.03 -0.19
+[2,]  0.03  0.04 -0.07
+[3,] -0.19 -0.07  0.26
 
 $betaMat
-      [,1]   [,2]
-[1,] 1.276  0.267
-[2,] 0.267 -0.091
+     [,1]  [,2]
+[1,] 1.10  0.37
+[2,] 0.37 -0.06
 
 $psiMat
-       [,1]   [,2]
-[1,] -0.079 -0.040
-[2,]  0.375  0.083
-[3,] -0.296 -0.043
+      [,1]  [,2]
+[1,] -0.02 -0.02
+[2,]  0.21  0.06
+[3,] -0.19 -0.04
 
 > apply( estTL$mono, 2, table )
 $x_1
 
 FALSE  TRUE 
-   39   101 
+   36   104 
 
 $x_2
 
@@ -410,66 +401,66 @@ TRUE
 $x_3
 
 FALSE  TRUE 
-   17   123 
+    8   132 
 
 $y_1
 
 FALSE  TRUE 
-   11   129 
+    6   134 
 
 $y_2
 
 FALSE  TRUE 
-    4   136 
+    1   139 
 
 $all_x
 
 FALSE  TRUE 
-   55    85 
+   44    96 
 
 $all_y
 
 FALSE  TRUE 
-   15   125 
+    7   133 
 
 $all
 
 FALSE  TRUE 
-   67    73 
+   47    93 
 
 > lapply( estTL$ela, function(x) round( summary(x), 2 ) )
 $ela_x_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.20   -0.01    0.08    0.07    0.15    0.37 
+  -0.19    0.00    0.07    0.07    0.14    0.31 
 
 $ela_x_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   0.30    0.52    0.65    0.66    0.79    1.03 
+   0.40    0.58    0.66    0.66    0.74    0.88 
 
 $ela_x_3
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.20    0.13    0.30    0.27    0.41    0.70 
+  -0.12    0.15    0.28    0.27    0.37    0.69 
 
 $ela_y_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.87   -0.34   -0.17   -0.24   -0.06    0.23 
+  -0.91   -0.36   -0.16   -0.24   -0.06    0.15 
 
 $ela_y_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.51   -0.27   -0.17   -0.18   -0.08    0.11 
+  -0.60   -0.24   -0.16   -0.17   -0.10    0.01 
 
 $ela_scale
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- -41.20    1.73    2.45    3.17    3.70   39.00 
+   1.09    1.87    2.75    4.08    3.95  112.32 
 
 > 
 > # calculate the dependent variable (logarithm of predicted distance)
 > appleProdFr86$logDistTL <- distRayCalc( xNames = c( "qCap", "qLab", "qMat" ),
 +   yNames = c( "qApples", "qOtherOut" ), data = appleProdFr86, 
 +   coef = coef( estTL ) )
-> round( summary( appleProdFr86$logDistTL ), 3 )
+> round( summary( appleProdFr86$logDistTL ), 2 )
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- -0.427   0.093   0.226   0.273   0.452   1.102 
+  -0.40    0.09    0.26    0.29    0.47    1.09 
 > 
 > # calculate elasticities
 > elaTL <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),
@@ -480,27 +471,27 @@ $ela_scale
 > lapply( elaTL, function(x) round( summary(x), 2 ) )
 $ela_x_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.20   -0.01    0.08    0.07    0.15    0.37 
+  -0.19    0.00    0.07    0.07    0.14    0.31 
 
 $ela_x_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   0.30    0.52    0.65    0.66    0.79    1.03 
+   0.40    0.58    0.66    0.66    0.74    0.88 
 
 $ela_x_3
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.20    0.13    0.30    0.27    0.41    0.70 
+  -0.12    0.15    0.28    0.27    0.37    0.69 
 
 $ela_y_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.87   -0.34   -0.17   -0.24   -0.06    0.23 
+  -0.91   -0.36   -0.16   -0.24   -0.06    0.15 
 
 $ela_y_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.51   -0.27   -0.17   -0.18   -0.08    0.11 
+  -0.60   -0.24   -0.16   -0.17   -0.10    0.01 
 
 $ela_scale
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
- -41.20    1.73    2.45    3.17    3.70   39.00 
+   1.09    1.87    2.75    4.08    3.95  112.32 
 
 > 
 > # calculate derivatives
@@ -510,24 +501,24 @@ $ela_scale
 > lapply( derivTL, function(x) round( summary(x), 
 +   3 - round( log( max( abs( x ) ), 10 ) ) ) )
 $d_x_1
-     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
--4.68e-05 -2.00e-07  1.10e-06  1.00e-07  2.10e-06  8.70e-06 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -4.52    0.00    0.10    0.01    0.21    0.89 
 
 $d_x_2
-    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
-7.30e-07 3.28e-06 4.64e-06 4.64e-06 6.09e-06 9.18e-06 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.166   0.887   1.134   1.110   1.399   2.275 
 
 $d_x_3
-     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
--2.96e-05  6.40e-06  1.30e-05  1.48e-05  2.23e-05  9.06e-05 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -0.508   0.229   0.389   0.457   0.617   2.630 
 
 $d_y_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -2.37   -0.34   -0.15   -0.22   -0.09    4.23 
+  -1.82   -0.90   -0.48   -0.51   -0.30    7.23 
 
 $d_y_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -4.24   -0.36   -0.15   -0.34   -0.09    0.62 
+  -9.33   -0.60   -0.27   -0.59   -0.13    0.01 
 
 > 
 > # vector of unrestricted coefficients and their covariance matrix
@@ -543,13 +534,13 @@ $d_y_2
 > minDistTL <- solve.QP( Dmat = uCovInvTL, dvec = rep( 0, nCoefTL ),
 +   Amat = t( restrTL$RMat ), bvec = - restrTL$RMat %*% uCoefTL + restrTL$rVec )
 > rCoefTL <- minDistTL$solution + uCoefTL
-> round( rCoefTL, 3 )
+> round( rCoefTL, 2 )
 (Intercept)     alpha_1     alpha_2      beta_1      beta_2   alpha_1_1 
-    -10.117      -0.067       0.474      -1.322      -0.516       0.042 
+       0.73        0.07        0.44       -0.77       -0.65        0.04 
   alpha_1_2   alpha_2_2    beta_1_1    beta_1_2    beta_2_2     psi_1_1 
-      0.037      -0.035       0.945       0.102      -0.095       0.024 
+       0.03        0.01        1.01        0.24       -0.07        0.01 
     psi_1_2     psi_2_1     psi_2_2 
-      0.014       0.197       0.036 
+       0.01        0.20        0.08 
 > 
 > # calculate elasticities based on restricted coefficients
 > rElaTL <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),
@@ -558,30 +549,30 @@ $d_y_2
 > lapply( rElaTL, function(x) round( summary(x), 2 ) )
 $ela_x_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   0.00    0.07    0.10    0.09    0.12    0.19 
+   0.00    0.06    0.09    0.08    0.11    0.16 
 
 $ela_x_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   0.43    0.55    0.62    0.62    0.70    0.82 
+   0.39    0.57    0.63    0.64    0.71    0.85 
 
 $ela_x_3
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   0.02    0.20    0.31    0.28    0.36    0.55 
+   0.00    0.20    0.29    0.28    0.36    0.61 
 
 $ela_y_1
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.74   -0.32   -0.18   -0.23   -0.11    0.00 
+  -0.79   -0.35   -0.19   -0.24   -0.10    0.00 
 
 $ela_y_2
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  -0.39   -0.25   -0.19   -0.19   -0.11    0.00 
+  -0.45   -0.25   -0.18   -0.18   -0.11    0.00 
 
 $ela_scale
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-   1.31    1.93    2.42    2.83    2.99   14.69 
+   1.26    1.86    2.52    2.94    3.23   17.05 
 
 > 
 > 
 > proc.time()
    user  system elapsed 
-  1.700   0.088   1.782 
+  1.624   0.067   1.685 

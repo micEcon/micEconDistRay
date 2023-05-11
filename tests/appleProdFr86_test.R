@@ -7,6 +7,17 @@ appleProdFr86$qCap <- appleProdFr86$vCap / appleProdFr86$pCap
 appleProdFr86$qLab <- appleProdFr86$vLab / appleProdFr86$pLab
 appleProdFr86$qMat <- appleProdFr86$vMat / appleProdFr86$pMat
 
+# inputs
+xNames <- c( "qCap", "qLab", "qMat" )
+# outputs 
+yNames <- c( "qApples", "qOtherOut" )
+
+# mean-scaling input and output quantities
+for( n in c( xNames, yNames ) ) {
+  appleProdFr86[[ n ]] <- appleProdFr86[[ n ]] / mean( appleProdFr86[[ n ]] ) 
+}
+
+
 ### Cobb-Douglas ray-based input distance function
 estCD <- distRayEst( xNames = c( "qCap", "qLab", "qMat" ),
   yNames = c( "qApples", "qOtherOut" ),
@@ -16,7 +27,7 @@ cbind( round( coef( estCD )[ !grepl( "(Intercept)", names( coef( estCD ) ) ) ], 
 cbind( round( coef( estCD )[ grepl( "(Intercept)", names( coef( estCD ) ) ) ], 2 ) )
 cbind( names( estCD ) )
 ## IGNORE_RDIFF_END
-lapply( estCD$coefList, function(x) round( x, 3 ) )
+lapply( estCD$coefList, function(x) round( x, 2 ) )
 apply( estCD$mono, 2, table )
 lapply( estCD$ela, function(x) round( summary(x), 2 ) )
 
@@ -24,7 +35,7 @@ lapply( estCD$ela, function(x) round( summary(x), 2 ) )
 appleProdFr86$distCD <- distRayCalc( xNames = c( "qCap", "qLab", "qMat" ),
   yNames = c( "qApples", "qOtherOut" ), data = appleProdFr86, 
   coef = coef( estCD ), form = "cd" )
-round( summary( appleProdFr86$distCD ), 3 )
+round( summary( appleProdFr86$distCD ), 2 )
 
 # calculate elasticities
 elaCD <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),
@@ -37,8 +48,7 @@ lapply( elaCD, function(x) round( summary(x), 2 ) )
 derivCD <- distRayDeriv( xNames = c( "qCap", "qLab", "qMat" ),
   yNames = c( "qApples", "qOtherOut" ),
   coef = coef( estCD ), data = appleProdFr86, form = "cd" )
-lapply( derivCD, function(x) round( summary(x), 
-  3 - round( log( max( abs( x ) ), 10 ) ) ) )
+lapply( derivCD, function(x) round( summary(x), 2 ) )
 
 # vector of unrestricted coefficients and their covariance matrix
 nCoefCD <- length( coef( estCD ) ) - 2
@@ -54,7 +64,7 @@ restrCD <- distRayMonoRestr( xNames = c( "qCap", "qLab", "qMat" ),
 minDistCD <- solve.QP( Dmat = uCovInvCD, dvec = rep( 0, nCoefCD ),
   Amat = t( restrCD$RMat ), bvec = - restrCD$RMat %*% uCoefCD + restrCD$rVec )
 rCoefCD <- minDistCD$solution + uCoefCD
-round( rCoefCD, 3 )
+round( rCoefCD, 2 )
 
 # calculate elasticities based on restricted coefficients
 rElaCD <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),
@@ -71,7 +81,7 @@ cbind( round( coef( estTL ), 2 ) )
 ## IGNORE_RDIFF_BEGIN
 cbind( names( estTL ) )
 ## IGNORE_RDIFF_END
-lapply( estTL$coefList, function(x) round( x, 3 ) )
+lapply( estTL$coefList, function(x) round( x, 2 ) )
 apply( estTL$mono, 2, table )
 lapply( estTL$ela, function(x) round( summary(x), 2 ) )
 
@@ -79,7 +89,7 @@ lapply( estTL$ela, function(x) round( summary(x), 2 ) )
 appleProdFr86$logDistTL <- distRayCalc( xNames = c( "qCap", "qLab", "qMat" ),
   yNames = c( "qApples", "qOtherOut" ), data = appleProdFr86, 
   coef = coef( estTL ) )
-round( summary( appleProdFr86$logDistTL ), 3 )
+round( summary( appleProdFr86$logDistTL ), 2 )
 
 # calculate elasticities
 elaTL <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),
@@ -108,7 +118,7 @@ restrTL <- distRayMonoRestr( xNames = c( "qCap", "qLab", "qMat" ),
 minDistTL <- solve.QP( Dmat = uCovInvTL, dvec = rep( 0, nCoefTL ),
   Amat = t( restrTL$RMat ), bvec = - restrTL$RMat %*% uCoefTL + restrTL$rVec )
 rCoefTL <- minDistTL$solution + uCoefTL
-round( rCoefTL, 3 )
+round( rCoefTL, 2 )
 
 # calculate elasticities based on restricted coefficients
 rElaTL <- distRayEla( xNames = c( "qCap", "qLab", "qMat" ),

@@ -22,8 +22,8 @@ Type 'q()' to quit R.
 > 
 > library( "micEconDistRay" )
 
-Please cite the 'micEconDistRay' package as:
-Price and Henningsen (forthcoming): A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: Derivation and an Empirical Application. Journal of Productivity Analysis.
+Please cite the 'micEconDistRay' package in publications as:
+Price, J.J. and Henningsen, A. (2022): A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: Derivation and an Empirical Application. IFRO Working Paper 2022/03. Department of Food and Resource Economics, University of Copenhagen. url: https://ideas.repec.org/p/foi/wpaper/2022_03.html.
 
 If you have questions, suggestions, or comments regarding the 'micEconDistRay' package, please use 'Issues' at the package's GitHub site:
 https://github.com/micEcon/micEconDistRay/issues
@@ -1246,4 +1246,4 @@ $sela_z_2
 > 
 > proc.time()
    user  system elapsed 
-  2.364   0.142   2.498 
+  2.453   0.131   2.576 

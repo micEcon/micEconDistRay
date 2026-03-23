@@ -1,7 +1,7 @@
 
-R version 4.3.0 (2023-04-21) -- "Already Tomorrow"
-Copyright (C) 2023 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu (64-bit)
+R version 4.5.2 (2025-10-31) -- "[Not] Part in a Rumble"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -18,7 +18,7 @@ Type 'q()' to quit R.
 > library( "micEconDistRay" )
 
 Please cite the 'micEconDistRay' package in publications as:
-Price, J.J. and Henningsen, A. (2022): A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: Derivation and an Empirical Application. IFRO Working Paper 2022/03. Department of Food and Resource Economics, University of Copenhagen. url: https://ideas.repec.org/p/foi/wpaper/2022_03.html.
+Price, J.J. and Henningsen, A. (2023): A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: Derivation and an Empirical Application. Journal of Productivity Analysis 60, p. 179-188. DOI: 10.1007/s11123-023-00684-1. URL: https://doi.org/10.1007/s11123-023-00684-1.
 
 If you have questions, suggestions, or comments regarding the 'micEconDistRay' package, please use 'Issues' at the package's GitHub site:
 https://github.com/micEcon/micEconDistRay/issues
@@ -564,4 +564,4 @@ $ela_scale
 > 
 > proc.time()
    user  system elapsed 
-  1.630   0.120   1.742 
+  1.735   0.145   1.869 

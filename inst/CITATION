@@ -1,23 +1,25 @@
 citHeader("To cite the 'micEconDistRay' package in publications please use:")
 
 bibentry(
-  bibtype = "TechReport",
+  bibtype = "Article",
   title = "A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: Derivation and an Empirical Application",
   author = c( 
     person( c( "Juan", "José" ), "Price" ),
     person( "Arne", "Henningsen" ) 
   ),
-  year = 2022,
-  institution = "Department of Food and Resource Economics, University of Copenhagen",
-  url = "https://CRAN.R-project.org/package=sfaR/",
-  number = "2022/03",
-  type = "IFRO Working Paper",
+  year = 2023,
+  journal = "Journal of Productivity Analysis",
+  url = "https://doi.org/10.1007/s11123-023-00684-1",
+  issue = "60",
+  pages = "179-188",
+  doi = "10.1007/s11123-023-00684-1",
   url = "https://ideas.repec.org/p/foi/wpaper/2022_03.html",
   textVersion = paste( 
-    "Price, J.J. and Henningsen, A. (2022):",
+    "Price, J.J. and Henningsen, A. (2023):",
     "A Ray-Based Input Distance Function to Model Zero-Valued Output Quantities: Derivation and an Empirical Application.",
-    "IFRO Working Paper 2022/03. Department of Food and Resource Economics, University of Copenhagen.", 
-    "url: https://ideas.repec.org/p/foi/wpaper/2022_03.html." 
+    "Journal of Productivity Analysis 60, p. 179-188.", 
+    "DOI: 10.1007/s11123-023-00684-1.", 
+    "URL: https://doi.org/10.1007/s11123-023-00684-1." 
   ) 
 )
 

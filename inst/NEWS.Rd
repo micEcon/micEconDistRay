@@ -2,6 +2,13 @@
 \title{News for \R{} Package \pkg{micEconDistRay}}
 \encoding{UTF-8}
 
+\section{Changes in version 0.1-4 (2026-03-23)}{
+  \itemize{
+    \item Corrected a minor issue in a test script.
+    \item Updated the citation information.
+  }
+}
+
 \section{Changes in version 0.1-2 (2023-05-11)}{
   \itemize{
     \item Made the output of a test script computationally / numerically 

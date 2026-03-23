@@ -164,7 +164,7 @@ lapply( elaTLFull, function(x) round( summary(x), 2 ) )
 
 # calculate derivatives
 derivTLFull <- distRayDeriv( xNames = xNames, yNames = yNames, zNames = zNames,
-  coef = coef( estTLFull ), data = MuseumsDk )
+  coef = coef( estTLFull ), data = MuseumsDk, conDummy = conDummy )
 lapply( derivTLFull, function(x) round( summary(x), 
   3 - round( log( max( abs( x ) ), 10 ) ) ) )
 

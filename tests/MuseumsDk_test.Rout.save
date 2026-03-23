@@ -1,7 +1,7 @@
 
-R version 4.3.0 (2023-04-21) -- "Already Tomorrow"
-Copyright (C) 2023 The R Foundation for Statistical Computing
-Platform: x86_64-pc-linux-gnu (64-bit)
+R version 4.5.2 (2025-10-31) -- "[Not] Part in a Rumble"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
 
 R is free software and comes with ABSOLUTELY NO WARRANTY.
 You are welcome to redistribute it under certain conditions.
@@ -1104,52 +1104,52 @@ $sela_z_2
 > 
 > # calculate derivatives
 > derivTLFull <- distRayDeriv( xNames = xNames, yNames = yNames, zNames = zNames,
-+   coef = coef( estTLFull ), data = MuseumsDk )
++   coef = coef( estTLFull ), data = MuseumsDk, conDummy = conDummy )
 > lapply( derivTLFull, function(x) round( summary(x), 
 +   3 - round( log( max( abs( x ) ), 10 ) ) ) )
 $d_x_1
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA      NA      NA      NA         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.24    0.12    0.44    0.76    1.10    8.94 
 
 $d_x_2
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA      NA      NA      NA         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -0.81    0.31    1.03    1.26    1.96    5.80 
 
 $d_x_3
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA      NA      NA      NA         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -18.13    0.22    0.50    0.44    0.95    2.60 
 
 $d_y_1
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA      NA      NA      NA         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -7.64   -0.84   -0.51   -0.62   -0.29    1.62 
 
 $d_y_2
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA      NA      NA      NA         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -0.839  -0.069   0.003   0.026   0.089   2.458 
 
 $d_y_3
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA      NA      NA      NA         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -1.759  -0.438  -0.206  -0.290  -0.077   1.039 
 
 $d_y_4
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA      NA      NA      NA         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -3.056  -0.281  -0.110  -0.228  -0.028   0.847 
 
 $d_y_5
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA      NA      NA      NA         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -4.74   -0.44   -0.13   -0.30   -0.03    2.64 
 
 $d_y_6
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA      NA      NA      NA         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -4.67   -0.26   -0.05   -0.12    0.07    5.17 
 
 $d_z_1
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA      NA      NA      NA         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -0.947  -0.177   0.065   0.040   0.259   1.161 
 
 $d_z_2
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA      NA      NA      NA         
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  -2.91   -0.90   -0.28   -0.44    0.03    4.14 
 
 > 
 > # vector of unrestricted coefficients and their covariance matrix
@@ -1246,4 +1246,4 @@ $sela_z_2
 > 
 > proc.time()
    user  system elapsed 
-  2.453   0.131   2.576 
+  2.887   0.145   3.024 

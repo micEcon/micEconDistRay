@@ -153,7 +153,7 @@ lapply( estTLFull$ela, function(x) round( summary(x), 2 ) )
 # calculate the dependent variable (logarithm of predicted distance)
 MuseumsDk$distTLFull <- distRayCalc( 
   xNames = xNames, yNames = yNames, zNames = zNames, 
-  data = MuseumsDk, coef = coef( estTLFull ) )
+  data = MuseumsDk, coef = coef( estTLFull ), conDummy = conDummy )
 round( summary( MuseumsDk$distTLFull ), 3 )
 
 # calculate elasticities

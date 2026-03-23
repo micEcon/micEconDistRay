@@ -1042,10 +1042,10 @@ $sela_z_2
 > # calculate the dependent variable (logarithm of predicted distance)
 > MuseumsDk$distTLFull <- distRayCalc( 
 +   xNames = xNames, yNames = yNames, zNames = zNames, 
-+   data = MuseumsDk, coef = coef( estTLFull ) )
++   data = MuseumsDk, coef = coef( estTLFull ), conDummy = conDummy )
 > round( summary( MuseumsDk$distTLFull ), 3 )
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-     NA      NA      NA     NaN      NA      NA     528 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ -0.624   0.029   0.224   0.211   0.378   1.550 
 > 
 > # calculate elasticities
 > elaTLFull <- distRayEla( xNames = xNames, yNames = yNames, zNames = zNames,
@@ -1246,4 +1246,4 @@ $sela_z_2
 > 
 > proc.time()
    user  system elapsed 
-  2.754   0.189   2.933 
+  2.407   0.156   2.554 

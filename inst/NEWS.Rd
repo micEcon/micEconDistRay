@@ -4,7 +4,7 @@
 
 \section{Changes in version 0.1-4 (2026-03-23)}{
   \itemize{
-    \item Corrected a minor issue in a test script.
+    \item Corrected two minors issues in a test script.
     \item Updated the citation information.
   }
 }
